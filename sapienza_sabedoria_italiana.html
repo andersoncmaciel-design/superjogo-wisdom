@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAPIENZA :: Sabedoria Italiana - Desafio de Italiano</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        venetian: {
+                            900: '#13080e',
+                            800: '#230c16',
+                            700: '#381223',
+                            600: '#4e1931',
+                        },
+                        gold: {
+                            300: '#f3e5ab',
+                            400: '#e6c667',
+                            500: '#d4af37',
+                            600: '#aa8822',
+                        },
+                        terracotta: '#c85a32',
+                        parchment: '#f7f4ea',
+                        marble: '#e8e6e1'
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        raleway: ['Raleway', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: radial-gradient(circle at center, #2b111b 0%, #180b11 70%, #0d0508 100%);
+            background-attachment: fixed;
+            color: #f7f4ea;
+        }
+
+        .gold-border {
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa8822 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-button {
+            background: linear-gradient(135deg, #d4af37 0%, #b89228 100%);
+            color: #180b11;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .gold-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #e6c667 0%, #d4af37 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+        }
+
+        .gold-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .word-chip {
+            background: rgba(247, 244, 234, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #f7f4ea;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .word-chip:hover {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: #d4af37;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .word-chip-selected {
+            background: linear-gradient(135deg, #d4af37 0%, #b89228 100%);
+            color: #13080e;
+            font-weight: 600;
+            border-color: #e6c667;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+        }
+
+        .word-chip-selected:hover {
+            background: linear-gradient(135deg, #e6c667 0%, #c8a02c 100%);
+            transform: translateY(-2px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #180b11;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #381223;
+            border-radius: 4px;
+            border: 1px solid #d4af37;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 md:p-6 text-slate-100">
+
+    <!-- Top Navigation / Header -->
+    <header class="max-w-4xl w-full mx-auto mb-4 text-center">
+        <div class="inline-flex items-center justify-center space-x-3 mb-2">
+            <span class="text-3xl md:text-4xl text-amber-400">🏛️</span>
+            <h1 class="font-cinzel text-3xl md:text-5xl font-black tracking-wider gold-gradient-text uppercase">
+                Sapienza
+            </h1>
+            <span class="text-3xl md:text-4xl text-amber-400">📜</span>
+        </div>
+        <p class="font-playfair italic text-amber-200/80 text-sm md:text-base">
+            Sabedoria Italiana — Desafio da Língua, Arte e Filosofia
+        </p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl w-full mx-auto bg-venetian-800/90 backdrop-blur-md rounded-2xl p-4 md:p-8 gold-border shadow-2xl flex-grow flex flex-col justify-between my-2">
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="space-y-6">
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-3 gap-2 md:gap-4 bg-venetian-900/80 p-3 md:p-4 rounded-xl border border-gold-500/30 text-center font-cinzel">
+                <div class="p-1">
+                    <span class="text-xs text-amber-300/70 block uppercase tracking-wider">Questão</span>
+                    <span id="stat-progress" class="text-lg md:text-2xl font-bold text-amber-400">1 / 50</span>
+                </div>
+                <div class="p-1 border-x border-gold-500/20">
+                    <span class="text-xs text-amber-300/70 block uppercase tracking-wider">Pontuação</span>
+                    <span id="stat-score" class="text-lg md:text-2xl font-bold text-amber-400">0</span>
+                </div>
+                <div class="p-1">
+                    <span class="text-xs text-amber-300/70 block uppercase tracking-wider">Precisão</span>
+                    <span id="stat-accuracy" class="text-lg md:text-2xl font-bold text-amber-400">100%</span>
+                </div>
+            </div>
+
+            <!-- Quote Box -->
+            <div class="bg-venetian-900/60 p-5 md:p-6 rounded-xl border-l-4 border-gold-500 relative">
+                <div class="flex justify-between items-start mb-2">
+                    <span id="quote-author" class="font-cinzel text-amber-400 font-bold tracking-wide text-lg md:text-xl">
+                        --
+                    </span>
+                    <span id="author-period" class="text-xs text-amber-200/60 font-mono bg-venetian-700/60 px-2 py-1 rounded border border-gold-500/20">
+                        --
+                    </span>
+                </div>
+                <p id="quote-translation" class="font-playfair text-slate-200 italic text-base md:text-xl leading-relaxed mt-2">
+                    "--"
+                </p>
+            </div>
+
+            <!-- Answer Construction Area -->
+            <div>
+                <label class="block text-xs uppercase font-cinzel text-amber-300/80 mb-2 tracking-wider flex items-center justify-between">
+                    <span><span>Sua resposta em Italiano:</span></span>
+                    <span class="text-amber-200/50 text-[10px] lowercase italic">(clique nas palavras para mover)</span>
+                </label>
+                <div id="answer-area" class="min-h-[90px] p-4 bg-venetian-900/90 rounded-xl border-2 border-dashed border-gold-500/40 flex flex-wrap gap-2 items-center align-content-start transition-all">
+                    <!-- Selected words appear here -->
+                </div>
+            </div>
+
+            <!-- Options Area (Word Bank) -->
+            <div>
+                <label class="block text-xs uppercase font-cinzel text-amber-300/80 mb-2 tracking-wider">
+                    Banco de Palavras:
+                </label>
+                <div id="options-area" class="min-h-[90px] p-4 bg-venetian-900/40 rounded-xl border border-gold-500/20 flex flex-wrap gap-2 items-center align-content-start">
+                    <!-- Available words appear here -->
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex flex-wrap gap-3 justify-between items-center pt-2">
+                <button id="btn-clear" onclick="clearAnswer()" class="px-4 py-2.5 rounded-lg border border-gold-500/40 hover:border-gold-500 text-amber-200 hover:text-white transition flex items-center gap-2 text-sm font-semibold">
+                    <i class="fa-solid fa-rotate-left text-xs"></i> Limpar
+                </button>
+
+                <div class="flex gap-3">
+                    <button id="btn-verify" onclick="verifyAnswer()" class="gold-button px-6 py-2.5 rounded-lg text-sm uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i> Verifique
+                    </button>
+                    <button id="btn-next" onclick="nextQuestion()" style="display: none;" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-2.5 rounded-lg text-sm uppercase tracking-wider transition shadow-lg flex items-center gap-2">
+                        Próxima <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feedback Message Box -->
+            <div id="feedback-box" style="display: none;" class="p-4 rounded-xl text-sm leading-relaxed border transition-all">
+                <div id="feedback-content"></div>
+            </div>
+        </div>
+
+        <!-- Game End / Summary Screen -->
+        <div id="end-screen" style="display: none;" class="text-center space-y-6 py-6">
+            <div class="text-6xl mb-2">🏛️</div>
+            <h2 class="font-cinzel text-3xl md:text-4xl font-bold text-amber-400">
+                Desafio Concluído!
+            </h2>
+            <p class="font-playfair text-lg text-amber-100 italic">
+                Você concluiu sua jornada pela sabedoria e filosofia italiana.
+            </p>
+
+            <div class="bg-venetian-900/80 p-6 rounded-xl border border-gold-500/40 max-w-md mx-auto space-y-4">
+                <div>
+                    <span class="text-xs uppercase font-cinzel text-amber-300/70 block">Título Concedido</span>
+                    <span id="final-rank" class="font-cinzel text-2xl font-black text-amber-400 block mt-1">
+                        Maestro di Firenze
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 border-t border-gold-500/20 pt-4">
+                    <div>
+                        <span class="text-xs text-amber-200/60 block">Pontuação Final</span>
+                        <span id="final-score" class="text-2xl font-bold text-white">0</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-amber-200/60 block">Precisão</span>
+                        <span id="final-accuracy" class="text-2xl font-bold text-white">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button onclick="restartGame()" class="gold-button px-8 py-3 rounded-xl text-base uppercase tracking-wider inline-flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-rotate-right"></i> Jogar Novamente
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-4xl w-full mx-auto mt-4 text-center text-xs text-amber-200/60 space-y-1 pb-2">
+        <p>Desenvolvido por <span class="text-amber-400 font-semibold">Anderson Carlos Maciel</span> | Apoie este projeto e estudos! <span class="bg-venetian-800 px-2 py-0.5 rounded border border-gold-500/30 font-mono text-amber-300">PIX 038.870.999-58</span></p>
+    </footer>
+
+    <script>
+        // Quotes Data Array (~50 quotes)
+        const quotesDatabase = [
+            { author: "Dante Alighieri", period: "1265 - 1321", translation: "Considere a sua semente: não fostes feitos para viver como brutos, mas para seguir a virtude e o conhecimento.", it: "Considerate la vostra semenza: fatti non foste a viver come bruti, ma per seguir virtute e canoscenza." },
+            { author: "Niccolò Machiavelli", period: "1469 - 1527", translation: "Os fins justificam os meios.", it: "Il fine giustifica i mezzi." },
+            { author: "Leonardo da Vinci", period: "1452 - 1519", translation: "A simplicidade é a sofisticação máxima.", it: "La semplicità è la massima raffinatezza." },
+            { author: "Galileo Galilei", period: "1564 - 1642", translation: "E no entanto ela se move.", it: "Eppur si muove." },
+            { author: "Giordano Bruno", period: "1548 - 1600", translation: "A verdade não muda porque não é aceita pela maioria.", it: "La verità non cambia perché non è accettata dalla maggioranza." },
+            { author: "Umberto Eco", period: "1932 - 2016", translation: "Quem não lê, aos 70 anos terá vivido uma única vida: a sua. Quem lê viverá 5000 anos.", it: "Chi non legge, a 70 anni avrà vissuto una sola vita: la propria. Chi legge avrà vissuto 5000 anni." },
+            { author: "Antonio Gramsci", period: "1891 - 1937", translation: "Pessimismo da inteligência, otimismo da vontade.", it: "Pessimismo dell'intelligenza, ottimismo della volontà." },
+            { author: "Giacomo Leopardi", period: "1798 - 1837", translation: "E o naufragar me é doce neste mar.", it: "E il naufragar m'è dolce in questo mare." },
+            { author: "Marco Aurélio", period: "121 - 180", translation: "A nossa vida é o que os nossos pensamentos a criam.", it: "La nostra vita è ciò che i nostri pensieri la fanno." },
+            { author: "Sêneca", period: "4 a.C. - 65 d.C.", translation: "Não é porque as coisas são difíceis que não ousamos, é porque não ousamos que elas são difíceis.", it: "Non è perché le cose sono difficili che non osiamo, è perché non osiamo che sono difficili." },
+            { author: "Cesare Beccaria", period: "1738 - 1794", translation: "Não há liberdade quando as leis permitem que o homem deixe de ser pessoa e se torne coisa.", it: "Non vi è libertà ogni qual volta le leggi permettono che l'uomo cessi di essere persona e diventi cosa." },
+            { author: "Benedetto Croce", period: "1866 - 1952", translation: "A história é sempre história contemporânea.", it: "La storia è sempre storia contemporanea." },
+            { author: "Niccolò Machiavelli", period: "1469 - 1527", translation: "É muito mais seguro ser temido do que amado, quando se tem de renunciar a um dos dois.", it: "È molto più sicuro essere temuto che amato, quando si ha da mancare uno dei due." },
+            { author: "Leonardo da Vinci", period: "1452 - 1519", translation: "A sabedoria é filha da experiência.", it: "La sapienza è figliuola della sperienza." },
+            { author: "Dante Alighieri", period: "1265 - 1321", translation: "O amor que move o sol e as outras estrelas.", it: "L'amor che move il sole e l'altre stelle." },
+            { author: "Galileo Galilei", period: "1564 - 1642", translation: "O livro da natureza está escrito na linguagem da matemática.", it: "Il libro della natura è scritto in lingua matematica." },
+            { author: "Giordano Bruno", period: "1548 - 1600", translation: "O tempo tudo tira e tudo dá.", it: "Il tempo tutto toglie e tutto dà." },
+            { author: "Francesco Petrarca", period: "1304 - 1374", translation: "Um belo morrer honra toda a vida.", it: "Un bel morire tutta la vita onora." },
+            { author: "Giovanni Boccaccio", period: "1313 - 1375", translation: "É humano ter compaixão dos aflitos.", it: "Umana cosa è l'aver compassione degli afflitti." },
+            { author: "Tommaso Campanella", period: "1568 - 1639", translation: "A história é o testemunho dos tempos, a luz da verdade, a vida da memória.", it: "La storia è testimone dei tempi, luce della verità, vita della memoria." },
+            { author: "Gian Battista Vico", period: "1668 - 1744", translation: "O mundo das nações é obra dos homens.", it: "Il mondo delle nazioni è fatto dagli uomini." },
+            { author: "Vilfredo Pareto", period: "1848 - 1923", translation: "A história é um cemitério de aristocracias.", it: "La storia è un cimitero di aristocrazie." },
+            { author: "Italo Calvino", period: "1923 - 1985", translation: "Um clássico é um livro que nunca terminou de dizer aquilo que tinha para dizer.", it: "Un classico è un libro che non ha mai finito di dire quel che ha da dire." },
+            { author: "Luigi Pirandello", period: "1867 - 1936", translation: "A vida não se conclui. Não sabe de conclusões.", it: "La vita non si conclude. Non sa di conclusioni." },
+            { author: "Marco Aurélio", period: "121 - 180", translation: "A melhor vingança é não ser como o inimigo.", it: "La migliore vendetta è non essere come il tuo nemico." },
+            { author: "Sêneca", period: "4 a.C. - 65 d.C.", translation: "A sorte é o que acontece quando a preparação encontra a oportunidade.", it: "La fortuna è ciò che accade quando la preparazione incontra l'opportunità." },
+            { author: "Leonardo da Vinci", period: "1452 - 1519", translation: "Aquele que não valoriza a vida não a merece.", it: "Chi non stima la vita non la merita." },
+            { author: "Niccolò Machiavelli", period: "1469 - 1527", translation: "Onde a vontade é grande, as dificuldades não podem ser grandes.", it: "Dove la volontà è grande, le difficoltà non possono essere grandi." },
+            { author: "Dante Alighieri", period: "1265 - 1321", translation: "Abandone toda esperança, vós que entrais.", it: "Lasciate ogne speranza, voi ch'intrate." },
+            { author: "Umberto Eco", period: "1932 - 2016", translation: "A beleza é um conceito relativo e histórico.", it: "La bellezza è un concetto relativo e storico." },
+            { author: "Antonio Gramsci", period: "1891 - 1937", translation: "A crise consiste precisamente no fato de que o velho morre e o novo não pode nascer.", it: "Il vecchio muore e il nuovo non può nascere: in questo interregno si verificano i fenomeni morbosi più svariati." },
+            { author: "Giacomo Leopardi", period: "1798 - 1837", translation: "A imaginação é a primeira fonte da felicidade humana.", it: "L'immaginazione è la prima fonte della felicità umana." },
+            { author: "Giordano Bruno", period: "1548 - 1600", translation: "Deus é o intelecto universal que tudo move e tudo cria.", it: "Dio è l'intelletto universale che tutto muove e tutto crea." },
+            { author: "Galileo Galilei", period: "1564 - 1642", translation: "Não se pode ensinar nada a um homem; só se pode ajudá-lo a encontrar a resposta dentro de si mesmo.", it: "Non puoi insegnare niente a un uomo; puoi solo aiutarlo a scoprirlo dentro di sé." },
+            { author: "Cesare Beccaria", period: "1738 - 1794", translation: "A certeza de um castigo, mesmo moderado, fará sempre uma impressão maior.", it: "La certezza di un castigo, farà sempre una maggiore impressione." },
+            { author: "Benedetto Croce", period: "1866 - 1952", translation: "A arte é intuição e a intuição é expressão.", it: "L'arte è intuizione e l'intuizione è espressione." },
+            { author: "Marsilio Ficino", period: "1433 - 1499", translation: "O amor é a força gravitacional que une todas as coisas do universo.", it: "L'amore è la forza gravitazionale che unisce tutte le cose nell'universo." },
+            { author: "Pico della Mirandola", period: "1463 - 1494", translation: "O homem é o escultor e árbitro do seu próprio destino.", it: "L'uomo è lo scultore e l'arbitro del proprio destino." },
+            { author: "Tommaso d'Aquino", period: "1225 - 1274", translation: "A fé tem a ver com coisas que não se veem, e a esperança com coisas que não estão ao alcance.", it: "La fede riguarda cose che non si vedono, e la speranza cose che non si possiedono." },
+            { author: "Francesco Guicciardini", period: "1483 - 1540", translation: "A experiência ensina muito aos homens que pensam.", it: "L'esperienza insegna molto agli uomini che pensano." },
+            { author: "Luigi Pirandello", period: "1867 - 1936", translation: "Cada um de nós se julga 'um', mas é 'cem mil' segundo os olhos dos outros.", it: "Ciascuno si crede 'uno', ma è 'centomila' secondo gli occhi degli altri." },
+            { author: "Italo Calvino", period: "1923 - 1985", translation: "A memória é importante apenas se liga o futuro ao passado.", it: "La memoria conta solo se lega l'avvenire al passato." },
+            { author: "Primo Levi", period: "1919 - 1987", translation: "Compreender é impossível, mas conhecer é necessário.", it: "Comprendere è impossibile, ma conoscere è necessario." },
+            { author: "Sêneca", period: "4 a.C. - 65 d.C.", translation: "Nenhum vento é favorável para quem não sabe a que porto quer chegar.", it: "Nessun vento è favorevole per il marinaio che non sa a quale porto vuol approdare." },
+            { author: "Marco Aurélio", period: "121 - 180", translation: "Comete injustiça não só quem faz algo, mas também quem nada faz.", it: "Commette ingiustizia non solo chi fa qualcosa, ma anche chi non fa nulla." },
+            { author: "Leonardo da Vinci", period: "1452 - 1519", translation: "Assim como um dia bem aproveitado produz um bom sono, uma vida bem aproveitada produz uma boa morte.", it: "Sì come una giornata bene spesa dà lieto dormire, così una vita bene usata dà lieto morire." },
+            { author: "Niccolò Machiavelli", period: "1469 - 1527", translation: "Não há nada mais difícil de manejar nem mais duvidoso de ter sucesso do que criar uma nova ordem de coisas.", it: "Non vi è nulla di più difficile da gestire che l'introduzione di un nuovo ordine di cose." },
+            { author: "Dante Alighieri", period: "1265 - 1321", translation: "A mais bela luz é a da verdade.", it: "La più bella luce è quella della verità." },
+            { author: "Umberto Eco", period: "1932 - 2016", translation: "As redes sociais deram o direito de falar a legiões de imbecis.", it: "I social media hanno dato diritto di parola a legioni di imbecilli." },
+            { author: "Giacomo Leopardi", period: "1798 - 1837", translation: "O mundo é um teatro onde a comédia é contínua.", it: "Il mondo è un teatro dove la commedia è continua." }
+        ];
+
+        // Game State Variables
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let totalAttempts = 0;
+        let correctAnswers = 0;
+        let selectedWords = [];
+        let availableWords = [];
+
+        // DOM Elements
+        const statProgress = document.getElementById('stat-progress');
+        const statScore = document.getElementById('stat-score');
+        const statAccuracy = document.getElementById('stat-accuracy');
+        const quoteAuthor = document.getElementById('quote-author');
+        const authorPeriod = document.getElementById('author-period');
+        const quoteTranslation = document.getElementById('quote-translation');
+        const answerArea = document.getElementById('answer-area');
+        const optionsArea = document.getElementById('options-area');
+        const btnVerify = document.getElementById('btn-verify');
+        const btnNext = document.getElementById('btn-next');
+        const btnClear = document.getElementById('btn-clear');
+        const feedbackBox = document.getElementById('feedback-box');
+        const feedbackContent = document.getElementById('feedback-content');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+
+        // Helper: Utility to shuffle arrays
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Helper: Tokenize Italian quote cleanly
+        function tokenizeItalian(sentence) {
+            // Keep words intact along with punctuation attached or separate
+            return sentence.trim().split(/\s+/);
+        }
+
+        // Initialize Game
+        function initGame() {
+            currentQuestions = shuffleArray(quotesDatabase);
+            currentIndex = 0;
+            score = 0;
+            totalAttempts = 0;
+            correctAnswers = 0;
+            
+            gameScreen.style.display = 'block';
+            endScreen.style.display = 'none';
+
+            loadQuestion();
+        }
+
+        // Load Single Question
+        function loadQuestion() {
+            const current = currentQuestions[currentIndex];
+            
+            // UI updates
+            statProgress.textContent = `${currentIndex + 1} / ${currentQuestions.length}`;
+            quoteAuthor.textContent = current.author;
+            authorPeriod.textContent = current.period;
+            quoteTranslation.textContent = `"${current.translation}"`;
+
+            // Reset interaction states
+            selectedWords = [];
+            const originalTokens = tokenizeItalian(current.it);
+            
+            // Map tokens with unique IDs to handle duplicates properly
+            availableWords = shuffleArray(originalTokens.map((word, idx) => ({
+                id: `${idx}-${word}`,
+                text: word
+            })));
+
+            // Reset buttons & feedback
+            btnVerify.style.display = 'inline-flex';
+            btnNext.style.display = 'none';
+            btnVerify.disabled = false;
+            btnClear.disabled = false;
+            feedbackBox.style.display = 'none';
+
+            renderWords();
+        }
+
+        // Render Word Chips in Options and Answer areas
+        function renderWords() {
+            // Render Answer Area
+            answerArea.innerHTML = '';
+            if (selectedWords.length === 0) {
+                answerArea.innerHTML = `<span class="text-amber-200/30 text-sm italic pointer-events-none">Sua frase aparecerá aqui...</span>`;
+            } else {
+                selectedWords.forEach((wordObj, index) => {
+                    const chip = document.createElement('button');
+                    chip.className = 'word-chip word-chip-selected px-3 py-1.5 rounded-lg text-sm md:text-base animate-pop';
+                    chip.textContent = wordObj.text;
+                    chip.onclick = () => deselectWord(index);
+                    answerArea.appendChild(chip);
+                });
+            }
+
+            // Render Options Area
+            optionsArea.innerHTML = '';
+            availableWords.forEach((wordObj, index) => {
+                const chip = document.createElement('button');
+                chip.className = 'word-chip px-3 py-1.5 rounded-lg text-sm md:text-base';
+                chip.textContent = wordObj.text;
+                chip.onclick = () => selectWord(index);
+                optionsArea.appendChild(chip);
+            });
+        }
+
+        // Action: Select Word
+        function selectWord(index) {
+            const word = availableWords.splice(index, 1)[0];
+            selectedWords.push(word);
+            renderWords();
+        }
+
+        // Action: Deselect Word
+        function deselectWord(index) {
+            const word = selectedWords.splice(index, 1)[0];
+            availableWords.push(word);
+            renderWords();
+        }
+
+        // Action: Clear Answer Area
+        function clearAnswer() {
+            availableWords = [...availableWords, ...selectedWords];
+            selectedWords = [];
+            renderWords();
+        }
+
+        // Action: Verify Current Answer
+        function verifyAnswer() {
+            // Check empty
+            if (selectedWords.length === 0) {
+                feedbackBox.style.display = 'block';
+                feedbackBox.className = 'p-4 rounded-xl text-sm leading-relaxed border bg-amber-950/80 border-amber-500/50 text-amber-200 mt-4';
+                feedbackContent.innerHTML = '⚠️ <strong>Attenzione:</strong> Selecione ao menos uma palavra antes de verificar.';
+                return;
+            }
+
+            totalAttempts++;
+            const current = currentQuestions[currentIndex];
+            const userString = selectedWords.map(w => w.text).join(' ');
+            const targetString = current.it;
+
+            feedbackBox.style.display = 'block';
+
+            if (userString === targetString) {
+                // Correct Answer
+                correctAnswers++;
+                score += 100;
+
+                feedbackBox.className = 'p-4 rounded-xl text-sm leading-relaxed border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 mt-4';
+                feedbackContent.innerHTML = `✨ <strong>Esatto! (Correto!)</strong><br>Eccellente conoscenza della lingua e della filosofia italiana.`;
+
+                // Confetti explosion
+                try {
+                    confetti({
+                        particleCount: 40,
+                        spread: 60,
+                        origin: { y: 0.8 },
+                        colors: ['#d4af37', '#e6c667', '#ffffff']
+                    });
+                } catch(e){}
+
+                btnVerify.style.display = 'none';
+                btnNext.style.display = 'inline-flex';
+                btnClear.disabled = true;
+
+            } else {
+                // Incorrect Answer
+                feedbackBox.className = 'p-4 rounded-xl text-sm leading-relaxed border bg-rose-950/80 border-rose-500/50 text-rose-200 mt-4';
+                feedbackContent.innerHTML = `❌ <strong>Errato! (Incorreto)</strong><br>A ordem correta em Italiano é:<br><span class="font-bold text-amber-300 font-playfair text-base md:text-lg mt-1 block">${targetString}</span>`;
+
+                btnVerify.style.display = 'none';
+                btnNext.style.display = 'inline-flex';
+                btnClear.disabled = true;
+            }
+
+            updateStats();
+        }
+
+        // Update Header Stats
+        function updateStats() {
+            statScore.textContent = score;
+            const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 100;
+            statAccuracy.textContent = `${accuracy}%`;
+        }
+
+        // Next Question or Finish Game
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                showEndScreen();
+            }
+        }
+
+        // Rank Calculation
+        function calculateRank(accuracy) {
+            if (accuracy >= 95) return 'Maestro di Firenze';
+            if (accuracy >= 80) return 'Pensatore del Rinascimento';
+            if (accuracy >= 60) return 'Studioso di Bologna';
+            if (accuracy >= 40) return 'Filosofo della Serenissima';
+            return 'Discepolo di Sapienza';
+        }
+
+        // Display End Screen
+        function showEndScreen() {
+            gameScreen.style.display = 'none';
+            endScreen.style.display = 'block';
+
+            const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 0;
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-accuracy').textContent = `${accuracy}%`;
+            document.getElementById('final-rank').textContent = calculateRank(accuracy);
+
+            try {
+                confetti({
+                    particleCount: 100,
+                    spread: 100,
+                    origin: { y: 0.5 },
+                    colors: ['#d4af37', '#e6c667', '#c85a32']
+                });
+            } catch(e){}
+        }
+
+        // Restart Game
+        function restartGame() {
+            initGame();
+        }
+
+        // Start on load
+        window.onload = function() {
+            initGame();
+        };
+    </script>
+</body>
+</html>

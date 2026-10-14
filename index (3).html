@@ -1,0 +1,674 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabedoria Germânica: Desafio de Alemão</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --german-dark: #111111;
+            --german-card: #1c1c1e;
+            --german-gold: #c5a059;
+            --gold-light: #e6d5b8;
+            --marble-white: #f5f5f7;
+            --text-light: #e2e8f0;
+            --border-gold: rgba(197, 160, 89, 0.4);
+            --correct-green: #2e7d32;
+            --wrong-red: #c62828;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: radial-gradient(circle at center, #2c2c2e 0%, #0b0b0c 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: var(--german-card);
+            border: 3px solid var(--german-gold);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(197, 160, 89, 0.2);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-wrapper::before, .game-wrapper::after {
+            content: "✒️";
+            position: absolute;
+            font-size: 1.5rem;
+            color: var(--german-gold);
+            opacity: 0.5;
+        }
+        .game-wrapper::before { top: 15px; left: 15px; }
+        .game-wrapper::after { top: 15px; right: 15px; }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-gold);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--german-gold);
+            font-size: 2.2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-light);
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(17, 17, 17, 0.6);
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-gold);
+            margin-bottom: 25px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gold-light);
+        }
+
+        .stat-value {
+            color: var(--german-gold);
+            font-size: 1.2rem;
+        }
+
+        .quote-box {
+            background: rgba(28, 28, 30, 0.9);
+            border-left: 4px solid var(--german-gold);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .author-tag {
+            font-family: 'Cinzel', serif;
+            color: var(--german-gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .portuguese-quote {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--marble-white);
+            line-height: 1.5;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .area-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            color: var(--gold-light);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .word-area {
+            min-height: 90px;
+            border: 2px dashed var(--border-gold);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: rgba(17, 17, 17, 0.4);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-content: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .word-area.answer-box {
+            border-style: solid;
+            background: rgba(17, 17, 17, 0.8);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .german-word {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            padding: 10px 18px;
+            background: linear-gradient(145deg, #2c2c2e, #1c1c1e);
+            border: 1px solid var(--german-gold);
+            border-radius: 8px;
+            color: var(--gold-light);
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .german-word:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(197, 160, 89, 0.3);
+            background: linear-gradient(145deg, #3a3a3c, #2c2c2e);
+            border-color: #f3e5ab;
+        }
+
+        .german-word:active {
+            transform: translateY(1px);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            border: 1px solid #4caf50;
+        }
+
+        .btn-verify:hover {
+            background: linear-gradient(135deg, #388e3c, #2e7d32);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #d84315, #bf360c);
+            color: white;
+            border: 1px solid #ff7043;
+        }
+
+        .btn-clear:hover {
+            background: linear-gradient(135deg, #e65100, #d84315);
+            box-shadow: 0 4px 12px rgba(216, 67, 21, 0.4);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #a68535, #7a5e1d);
+            color: white;
+            border: 1px solid var(--gold-light);
+        }
+
+        .btn-next:hover {
+            background: linear-gradient(135deg, #c5a059, #947225);
+            box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4);
+        }
+
+        .feedback-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-correct {
+            display: block;
+            background: rgba(46, 125, 50, 0.25);
+            border: 1px solid var(--correct-green);
+            color: #81c784;
+        }
+
+        .feedback-wrong {
+            display: block;
+            background: rgba(198, 40, 40, 0.25);
+            border: 1px solid var(--wrong-red);
+            color: #ef9a9a;
+        }
+
+        .feedback-wrong .correct-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--gold-light);
+            margin-top: 8px;
+            display: block;
+        }
+
+        .summary-screen {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .summary-title {
+            font-family: 'Cinzel', serif;
+            color: var(--german-gold);
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid var(--german-gold);
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(17, 17, 17, 0.8);
+            box-shadow: 0 0 25px rgba(197, 160, 89, 0.3);
+        }
+
+        .score-circle .number {
+            font-size: 2.2rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        .score-circle .label {
+            font-size: 0.8rem;
+            color: var(--german-gold);
+            text-transform: uppercase;
+        }
+
+        .rank-message {
+            font-size: 1.2rem;
+            color: var(--marble-white);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .game-wrapper { padding: 18px; }
+            h1 { font-size: 1.6rem; }
+            .german-word { font-size: 1.1rem; padding: 8px 12px; }
+            .btn { width: 100%; justify-content: center; }
+            .action-buttons { flex-direction: column; gap: 10px; }
+        }
+
+        footer {
+            color: var(--german-gold);               
+            text-align: center;        
+            padding: 20px;             
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-wrapper" id="gameContainer">
+    <header>
+        <h1>✒️ GEIST :: Sabedoria Germânica</h1>
+        <div class="subtitle">Aprenda Alemão através dos Grandes Filósofos e Pensadores</div>
+    </header>
+
+    <div id="quizView">
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span>Pergunta:</span>
+                <span class="stat-value" id="progressText">1 / 1</span>
+            </div>
+            <div class="stat-item">
+                <span>Pontuação:</span>
+                <span class="stat-value" id="scoreText">0</span>
+            </div>
+        </div>
+
+        <div class="quote-box">
+            <div class="author-tag">
+                <span>✒️</span>
+                <span id="authorName">Filósofo</span>
+            </div>
+            <div class="portuguese-quote" id="portugueseQuote">Tradução da citação em português...</div>
+        </div>
+
+        <div class="area-title">Opções de Palavras (Clique para selecionar)</div>
+        <div id="optionsArea" class="word-area"></div>
+
+        <div class="area-title">Sua Resposta em Alemão (Clique na palavra para remover)</div>
+        <div id="answerArea" class="word-area answer-box"></div>
+
+        <div class="action-buttons">
+            <button class="btn btn-verify" onclick="checkAnswer()">
+                ✓ Verificar
+            </button>
+            <button class="btn btn-clear" onclick="resetCurrentQuestion()">
+                ↺ Limpar
+            </button>
+            <button class="btn btn-next" onclick="nextQuestion()">
+                ➔ Próxima
+            </button>
+        </div>
+
+        <div id="feedback" class="feedback-message"></div>
+    </div>
+    <div>
+        <footer>
+            <p>Desenvolvido por Anderson Carlos Maciel. Apoie este projeto e estudos! PIX 038.870.999-58</p>
+        </footer>
+    </div>
+</div>
+
+<script>
+const questions = [
+    { author: "Friedrich Nietzsche", pt: "Aquele que tem um porquê para viver pode suportar quase qualquer como.", gr: "Wer ein Warum zu leben hat, erträgt fast jedes Wie." },
+    { author: "Friedrich Nietzsche", pt: "O que não me mata me fortalece.", gr: "Was mich nicht umbringt, macht mich stärker." },
+    { author: "Friedrich Nietzsche", pt: "O homem é algo que deve ser superado.", gr: "Der Mensch ist etwas, das überwunden werden muss." },
+    { author: "Friedrich Nietzsche", pt: "E aqueles que foram vistos dançando foram julgados insanos por aqueles que não podiam escutar a música.", gr: "Und diejenigen, die tanzten, wurden für verrückt gehalten von denen, die die Musik nicht hören konnten." },
+    { author: "Friedrich Nietzsche", pt: "Aquele que luta com monstros deve cuidar para que não se torne um monstro.", gr: "Wer mit Ungeheuern kämpft, mag zusehen, dass er nicht dabei zum Ungeheuer wird." },
+    { author: "Friedrich Nietzsche", pt: "E quando olhas muito tempo para um abismo, o abismo também olha para dentro de ti.", gr: "Und wenn du lange in einen Abgrund blickst, blickt der Abgrund auch in dich hinein." },
+    { author: "Friedrich Nietzsche", pt: "Sem a música, a vida seria um erro.", gr: "Ohne Musik wäre das Leben ein Irrtum." },
+    { author: "Friedrich Nietzsche", pt: "É preciso ter o caos dentro de si para dar à luz uma estrela dançante.", gr: "Man muss noch Chaos in sich haben, um einen tanzenden Stern gebären zu können." },
+    { author: "Friedrich Nietzsche", pt: "Deus está morto. Deus continua morto. E nós o matamos.", gr: "Gott ist tot. Gott bleibt tot. Und wir haben ihn getötet." },
+    { author: "Friedrich Nietzsche", pt: "Não existem fatos, apenas interpretações.", gr: "Es gibt keine Tatsachen, sondern nur Interpretationen." },
+    { author: "Immanuel Kant", pt: "Age apenas segundo uma máxima tal que possas ao mesmo tempo querer que ela se torne uma lei universal.", gr: "Handle nur nach derjenigen Maxime, durch die du zugleich wollen kannst, dass sie ein allgemeines Gesetz werde." },
+    { author: "Immanuel Kant", pt: "Pensamentos sem conteúdo são vazios, intuições sem conceitos são cegas.", gr: "Gedanken ohne Inhalt sind leer, Anschauungen ohne Begriffe sind blind." },
+    { author: "Immanuel Kant", pt: "Duas coisas enchem o ânimo de admiração: o céu estrelado acima de mim e a lei moral em mim.", gr: "Zwei Dinge erfüllen das Gemüt mit immer neuer Bewunderung: der bestirnte Himmel über mir und das moralische Gesetz in mir." },
+    { author: "Immanuel Kant", pt: "Ousai saber! Tem a coragem de fazer uso do teu próprio entendimento!", gr: "Sapere aude! Habe Mut, dich deines eigenen Verstandes zu bedienen!" },
+    { author: "Immanuel Kant", pt: "A ciência é o conhecimento organizado. A sabedoria é a vida organizada.", gr: "Wissenschaft ist organisiertes Wissen. Weisheit ist organisiertes Leben." },
+    { author: "Immanuel Kant", pt: "Podemos julgar o coração de um homem pela forma como ele trata os animais.", gr: "Wir können das Herz eines Menschen danach beurteilen, wie er Tiere behandelt." },
+    { author: "Immanuel Kant", pt: "A paciência é a virtude dos fortes.", gr: "Geduld ist die Tugend der Starken." },
+    { author: "Immanuel Kant", pt: "Com um material tão retorcido quanto o homem, nada de reto se pode construir.", gr: "Aus so krummem Holze, als woraus der Mensch gemacht ist, kann nichts ganz Gerades gezimmert werden." },
+    { author: "Arthur Schopenhauer", pt: "A vida humana oscila como um pêndulo entre a dor e o tédio.", gr: "Das menschliche Leben pendelt hin und her zwischen Schmerz und Langeweile." },
+    { author: "Arthur Schopenhauer", pt: "Toda verdade passa por três fases: primeiro é ridicularizada, depois combatida, e por fim aceita como óbvia.", gr: "Jede Wahrheit durchläuft drei Stufen: Zuerst wird sie lächerlich gemacht, dann bekämpft, und schließlich als selbstverständlich angesehen." },
+    { author: "Arthur Schopenhauer", pt: "O destino embaralha as cartas, e nós jogamos.", gr: "Das Schicksal mischt die Karten, und wir spielen." },
+    { author: "Arthur Schopenhauer", pt: "A solidão é a sorte de todos os grandes espíritos.", gr: "Die Einsamkeit ist das Los aller hervorragenden Geister." },
+    { author: "Arthur Schopenhauer", pt: "O dinheiro é como a água do mar: quanto mais se bebe, mais sede se tem.", gr: "Das Geld gleicht dem Seewasser: Je mehr man davon trinkt, desto durstiger wird man." },
+    { author: "Arthur Schopenhauer", pt: "A compaixão pelos animais está intimamente ligada à bondade de caráter.", gr: "Mitleid mit Tieren hängt mit der Güte des Charakters so eng zusammen." },
+    { author: "Arthur Schopenhauer", pt: "Comprar livros seria bom se pudessemos comprar também o tempo para os ler.", gr: "Bücher kaufen wäre gut, wenn man auch die Zeit, sie zu lesen, kaufen könnte." },
+    { author: "Karl Marx", pt: "Os filósofos têm apenas interpretado o mundo de maneiras diferentes; a questão, porém, é transformá-lo.", gr: "Die Philosophen haben die Welt nur verschieden interpretiert; es kommt aber darauf an, sie zu verändern." },
+    { author: "Karl Marx", pt: "A religião é o ópio do povo.", gr: "Die Religion ist der Opium des Volkes." },
+    { author: "Karl Marx", pt: "Trabalhadores do mundo, uni-vos!", gr: "Proletarier aller Länder, vereinigt euch!" },
+    { author: "Karl Marx", pt: "A história de todas as sociedades até hoje existentes é a história da luta de classes.", gr: "Die Geschichte aller bisherigen Gesellschaft ist die Geschichte von Klassenkämpfen." },
+    { author: "Johann Wolfgang von Goethe", pt: "Na origem era a ação.", gr: "Im Anfang war die Tat." },
+    { author: "Johann Wolfgang von Goethe", pt: "Mais luz!", gr: "Mehr Licht!" },
+    { author: "Johann Wolfgang von Goethe", pt: "Se você trata um indivíduo como ele é, ele permanecerá o que é.", gr: "Wenn man einen Menschen so behandelt, wie er ist, bleibt er, was er ist." },
+    { author: "Johann Wolfgang von Goethe", pt: "Nada é mais assustador do que a ignorância em ação.", gr: "Nichts ist schrecklicher als eine tätige Unwissenheit." },
+    { author: "Johann Wolfgang von Goethe", pt: "Conhecer a si mesmo é o começo da sabedoria.", gr: "Sich selbst zu kennen ist der Anfang aller Weisheit." },
+    { author: "Johann Wolfgang von Goethe", pt: "O homem comete erros enquanto tentar alcançar algo.", gr: "Es irrt der Mensch, solang er strebt." },
+    { author: "Johann Wolfgang von Goethe", pt: "A magia é acreditar em si mesmo. Se você conseguir fazer isso, poderá fazer qualquer coisa acontecer.", gr: "Zauberei ist, an sich selbst zu glauben. Wenn du das kannst, kannst du alles bewirken." },
+    { author: "Johann Wolfgang von Goethe", pt: "Ninguém é mais escravo do que aquele que se considera livre sem o ser.", gr: "Niemand ist mehr Sklave, als der sich für frei hält, ohne es zu sein." },
+    { author: "Martin Heidegger", pt: "A linguagem é a casa do ser.", gr: "Die Sprache ist das Haus des Seins." },
+    { author: "Martin Heidegger", pt: "O tempo é a dimensão do ser.", gr: "Die Zeit ist die Dimension des Seins." },
+    { author: "Martin Heidegger", pt: "A questão sobre a tecnologia não é de forma alguma algo tecnológico.", gr: "Die Frage nach der Technik ist nichts Technisches." },
+    { author: "Georg Wilhelm Friedrich Hegel", pt: "Nada de grande no mundo foi realizado sem paixão.", gr: "Nichts Großes ist in der Welt ohne Leidenschaft vollbracht worden." },
+    { author: "Georg Wilhelm Friedrich Hegel", pt: "O real é racional, e o racional é real.", gr: "Was vernünftig ist, das ist wirklich; und was wirklich ist, das ist vernünftig." },
+    { author: "Georg Wilhelm Friedrich Hegel", pt: "A história ensina que a história nada nos ensina.", gr: "Die Geschichte lehrt die Menschen, dass die Geschichte die Menschen nichts lehrt." },
+    { author: "Albert Einstein", pt: "A imaginação é mais importante que o conhecimento.", gr: "Phantasie ist wichtiger als Wissen, denn Wissen ist begrenzt." },
+    { author: "Albert Einstein", pt: "Deus não joga dados com o universo.", gr: "Gott würfelt nicht mit dem Universum." },
+    { author: "Albert Einstein", pt: "Duas coisas são infinitas: o universo e a estupidez humana; e eu não tenho certeza sobre o universo.", gr: "Zwei Dinge sind unendlich, das Universum und die menschliche Dummheit, aber beim Universum bin ich mir noch nicht ganz sicher." },
+    { author: "Albert Einstein", pt: "No meio da dificuldade encontra-se a oportunidade.", gr: "Inmitten von Schwierigkeiten liegt die Möglichkeit." },
+    { author: "Albert Einstein", pt: "Uma pessoa que nunca cometeu um erro nunca tentou nada de novo.", gr: "Ein Mensch, der nie einen Fehler gemacht hat, hat nie etwas Neues ausprobiert." },
+    { author: "Albert Einstein", pt: "A vida é como andar de bicicleta. Para manter o equilíbrio, você precisa se manter em movimento.", gr: "Das Leben ist wie Fahrrad fahren. Um das Gleichgewicht zu halten, musst du in Bewegung bleiben." },
+    { author: "Hermann Hesse", pt: "Cada vida é um caminho para si mesmo.", gr: "Jedes Leben ist ein Weg zu sich selbst." },
+    { author: "Hermann Hesse", pt: "Se você odeia uma pessoa, odeia algo nela que faz parte de você.", gr: "Wenn du einen Menschen haßt, so haßt du etwas in ihm, das ein Teil von dir selber ist." },
+    { author: "Hermann Hesse", pt: "E em todo início há um encanto que nos protege e nos ajuda a viver.", gr: "Und jedem Anfang wohnt ein Zauber inne, der uns beschützt und der uns hilft, zu leben." },
+    { author: "Friedrich Schiller", pt: "A arte é a filha da liberdade.", gr: "Die Kunst ist eine Tochter der Freiheit." },
+    { author: "Friedrich Schiller", pt: "A voz da maioria não é prova de justiça.", gr: "Die Mehrheit ist der Unsinn, Verstand ist stets bei wenigen nur gewesen." },
+    { author: "Friedrich Schiller", pt: "Aquele que não arrisca nada, não pode esperar nada.", gr: "Wer nichts waget, der darf nichts hoffen." },
+    { author: "Friedrich Schiller", pt: "O homem é plenamente humano apenas quando joga.", gr: "Der Mensch spielt nur, wo er in voller Bedeutung des Worts Mensch ist." },
+    { author: "Ludwig Wittgenstein", pt: "Os limites da minha linguagem significam os limites do meu mundo.", gr: "Die Grenzen meiner Sprache bedeuten die Grenzen meiner Welt." },
+    { author: "Ludwig Wittgenstein", pt: "Sobre aquilo de que não se pode falar, deve-se calar.", gr: "Wovon man nicht sprechen kann, darüber muss man schweigen." },
+    { author: "Ludwig Wittgenstein", pt: "O mundo é tudo o que é o caso.", gr: "Die Welt ist alles, was der Fall ist." },
+    { author: "Walter Benjamin", pt: "Não há documento de cultura que não seja também um documento de barbárie.", gr: "Es ist noch neues Dokument der Kultur gewesen, ohne zugleich ein solches der Barbarei zu sein." },
+    { author: "Theodor W. Adorno", pt: "Escrever poesia depois de Auschwitz é um ato de barbárie.", gr: "Nach Auschwitz ein Gedicht zu schreiben, ist barbarisch." },
+    { author: "Theodor W. Adorno", pt: "A vida errada não pode ser vivida corretamente.", gr: "Es gibt kein richtiges Leben im falschen." },
+    { author: "Hannah Arendt", pt: "A banalidade do mal.", gr: "Die Banalität des Bösen." },
+    { author: "Hannah Arendt", pt: "O poder surge quando as pessoas se juntam e agem em concerto.", gr: "Macht entspringt der Fähigkeit von Menschen, sich mit anderen zusammenzutun und im Einvernehmen mit ihnen zu handeln." },
+    { author: "Gottfried Wilhelm Leibniz", pt: "Este é o melhor dos mundos possíveis.", gr: "Dies ist die beste aller möglichen Welten." },
+    { author: "Gottfried Wilhelm Leibniz", pt: "Nada acontece sem que haja uma razão suficiente.", gr: "Nichts geschieht ohne zureichenden Grund." },
+    { author: "Max Weber", pt: "O homem é um animal amarrado a teias de significados que ele mesmo teceu.", gr: "Der Mensch ist ein Wesen, das in selbstgesponne Bedeutungsgewebe verstrickt ist." },
+    { author: "Novalis", pt: "A filosofia é verdadeiramente uma saudade de casa, um impulso de estar em casa em toda parte.", gr: "Die Philosophie ist eigentlich Heimweh, ein Trieb überall zu Hause zu sein." },
+    { author: "Franz Kafka", pt: "Um livro deve ser o machado para o mar congelado dentro de nós.", gr: "Ein Buch muss die Axt sein für das gefrorene Meer in uns." },
+    { author: "Franz Kafka", pt: "Há uma quantidade infinita de esperança, mas não para nós.", gr: "Es gibt unendlich viel Hoffnung, nur nicht für uns." },
+    { author: "Franz Kafka", pt: "Comece pelo que é certo, não pelo que é aceitável.", gr: "Beginne mit dem, was richtig ist, nicht mit dem, was akzeptabel ist." },
+    { author: "Thomas Mann", pt: "Uma grande verdade é uma verdade cujo oposto também é uma verdade profunda.", gr: "Eine große Wahrheit ist eine Wahrheit, deren Gegenteil auch eine tiefe Wahrheit ist." },
+    { author: "Thomas Mann", pt: "A tolerância torna-se um crime quando aplicada ao mal.", gr: "Toleranz wird zum Verbrechen, wenn sie dem Bösen gilt." },
+    { author: "Bertolt Brecht", pt: "Doce e honroso é morrer pela pátria, diz a sabedoria clássica. Mas é mais doce viver por ela.", gr: "Süß und ehrenvoll ist es, für das Vaterland zu sterben, sagt die alte Weisheit. Aber süßer ist es, für es zu leben." },
+    { author: "Bertolt Brecht", pt: "Infeliz da nação que precisa de heróis.", gr: "Unglücklich das Land, das Helden nötig hat." },
+    { author: "Bertolt Brecht", pt: "Primeiro a comida, depois a moral.", gr: "Erst kommt das Fressen, dann kommt die Moral." },
+    { author: "Rainer Maria Rilke", pt: "A única viagem é a viagem interior.", gr: "Die einzige Reise ist die Reise nach innen." },
+    { author: "Rainer Maria Rilke", pt: "Viva as perguntas agora.", gr: "Leben Sie jetzt die Fragen." },
+    { author: "Rainer Maria Rilke", pt: "O belo é apenas o começo do terrível.", gr: "Das Schöne ist nichts als des Schrecklichen Anfang." },
+    { author: "Wilhelm von Humboldt", pt: "A linguagem é o órgão do pensamento.", gr: "Die Sprache ist das bildende Organ des Gedanken." },
+    { author: "Alexander von Humboldt", pt: "A visão de mundo mais perigosa é a visão daqueles que não viram o mundo.", gr: "Die gefährlichste Weltanschauung ist die Weltanschauung derer, die die Welt nicht angeschaut haben." },
+    { author: "Eckhart Tolle", pt: "Onde quer que você esteja, esteja lá por inteiro.", gr: "Wo immer du bist, sei ganz dort." },
+    { author: "Eckhart Tolle", pt: "O poder sobre os outros é fraqueza disfarçada de força.", gr: "Macht über andere ist Schwäche, die als Stärke getarnt ist." },
+    { author: "Ludwig Feuerbach", pt: "O homem é o que ele come.", gr: "Der Mensch ist, was er isst." },
+    { author: "Gotthold Ephraim Lessing", pt: "A igualdade é a única base sólida de toda virtude e justiça.", gr: "Gleichheit ist das einzige feste Fundament aller Tugend und Gerechtigkeit." },
+    { author: "Heinrich Heine", pt: "Onde se queimam livros, acaba-se queimando pessoas.", gr: "Dort wo man Bücher verbrennt, verbrennt man am Ende auch Menschen." },
+    { author: "Karl Jaspers", pt: "A filosofia significa estar a caminho.", gr: "Philosophieren heißt auf dem Wege sein." },
+    { author: "Edmund Husserl", pt: "Devemos voltar às coisas mesmas!", gr: "Wir müssen auf die Sachen selbst zurückgehen!" },
+    { author: "Jürgen Habermas", pt: "O agir comunicativo baseia-se na busca do entendimento interpessoal.", gr: "Kommunikatives Handeln beruht auf der Suche nach verständigungsorientierter Interaktion." },
+    { author: "Friedrich Engels", pt: "Um grama de ação vale mais do que uma tonelada de teoria.", gr: "Ein Grammm Handlung ist mehr wert als eine Tonne Theorie." },
+    { author: "Friedrich Hölderlin", pt: "Mas onde está o perigo, cresce também o que salva.", gr: "Wo aber Gefahr ist, wächst das Rettende auch." },
+    { author: "Friedrich Hölderlin", pt: "O homem é un deus quando sonha e um mendigo quando pensa.", gr: "Ein Gott ist der Mensch, wenn er träumt, ein Bettler, wenn er nachdenkt." },
+    { author: "Max Stirner", pt: "Nada é mais importante para mim do que eu mesmo.", gr: "Mir geht nichts über Mich." },
+    { author: "Arthur Schopenhauer", pt: "A saúde não é tudo, mas sem saúde tudo é nada.", gr: "Die Gesundheit ist nicht alles, aber ohne Gesundheit ist alles nichts." },
+    { author: "Immanuel Kant", pt: "A liberdade é a faculdade que amplia o uso de todas as outras faculdades.", gr: "Freiheit ist das Vermögen, welches die Anwendung aller anderen Vermögen erweitert." },
+    { author: "Johann Wolfgang von Goethe", pt: "A sabedoria só é encontrada na verdade.", gr: "Die Weisheit ist nur in der Wahrheit zu finden." },
+    { author: "Friedrich Nietzsche", pt: "As melhores ideias vêm enquanto se caminha.", gr: "Alle gar guten Gedanken werden beim Gehen geboren." },
+    { author: "Karl Marx", pt: "A necessidade é cega até que se torne consciente.", gr: "Die Notwendigkeit ist blind, solange sie nicht begriffen wird." },
+    { author: "Albert Einstein", pt: "A mente que se abre a uma nova idéia jamais voltará ao seu tamanho original.", gr: "Der Geist, der sich für eine neue Idee öffnet, kehrt nie zu seiner ursprünglichen Größe zurück." },
+    { author: "Friedrich Schiller", pt: "A brevidade é a alma da sabedoria.", gr: "In der Kürze liegt die Würze." }
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+let userSelectedWords = [];
+let answerChecked = false;
+
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function loadQuestion() {
+    answerChecked = false;
+    userSelectedWords = [];
+    
+    const feedback = document.getElementById("feedback");
+    feedback.className = "feedback-message";
+    feedback.style.display = "none";
+    feedback.innerHTML = "";
+
+    const currentQ = questions[currentQuestionIndex];
+
+    document.getElementById("authorName").textContent = currentQ.author;
+    document.getElementById("portugueseQuote").textContent = `"${currentQ.pt}"`;
+    document.getElementById("progressText").textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
+    document.getElementById("scoreText").textContent = score;
+
+    const answerArea = document.getElementById("answerArea");
+    answerArea.innerHTML = "";
+
+    const originalWords = currentQ.gr.split(" ");
+    const shuffledWords = shuffleArray(originalWords);
+
+    const optionsArea = document.getElementById("optionsArea");
+    optionsArea.innerHTML = "";
+
+    shuffledWords.forEach((word, index) => {
+        const wordEl = createWordElement(word, index);
+        optionsArea.appendChild(wordEl);
+    });
+}
+
+function createWordElement(wordText, id) {
+    const span = document.createElement("span");
+    span.className = "german-word";
+    span.textContent = wordText;
+    span.dataset.word = wordText;
+    span.dataset.id = id;
+
+    span.onclick = () => handleWordClick(span);
+    return span;
+}
+
+function handleWordClick(element) {
+    const optionsArea = document.getElementById("optionsArea");
+    const answerArea = document.getElementById("answerArea");
+
+    if (element.parentElement === optionsArea) {
+        optionsArea.removeChild(element);
+        answerArea.appendChild(element);
+        userSelectedWords.push(element.dataset.word);
+    } else {
+        answerArea.removeChild(element);
+        optionsArea.appendChild(element);
+        
+        const index = userSelectedWords.indexOf(element.dataset.word);
+        if (index > -1) {
+            userSelectedWords.splice(index, 1);
+        }
+    }
+}
+
+function checkAnswer() {
+    const feedback = document.getElementById("feedback");
+
+    if (userSelectedWords.length === 0) {
+        feedback.className = "feedback-message feedback-wrong";
+        feedback.innerHTML = "<strong>⚠️ Achtung:</strong> Selecione ao menos uma palavra antes de verificar.";
+        feedback.style.display = "block";
+        return;
+    }
+
+    const currentQ = questions[currentQuestionIndex];
+    const userAnswer = userSelectedWords.join(" ");
+    const correctAnswer = currentQ.gr;
+
+    if (userAnswer === correctAnswer) {
+        feedback.className = "feedback-message feedback-correct";
+        feedback.innerHTML = "<strong>✨ Richtig! (Correto!)</strong><br>Excelente domínio da língua alemã e do pensamento germânico.";
+        feedback.style.display = "block";
+        
+        if (!answerChecked) {
+            score += 10;
+            document.getElementById("scoreText").textContent = score;
+            answerChecked = true;
+        }
+    } else {
+        feedback.className = "feedback-message feedback-wrong";
+        feedback.innerHTML = `<strong>❌ Falsch! (Incorreto)</strong><br>A ordem correta em Alemão é:<span class="correct-text">${correctAnswer}</span>`;
+        feedback.style.display = "block";
+        answerChecked = true;
+    }
+}
+
+function resetCurrentQuestion() {
+    loadQuestion();
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex >= questions.length) {
+        showFinalSummary();
+        return;
+    }
+
+    loadQuestion();
+}
+
+function showFinalSummary() {
+    const container = document.getElementById("gameContainer");
+    const maxScore = questions.length * 10;
+    
+    let title = "Estudioso da Filosofia";
+    if (score === maxScore) {
+        title = "Mestre de Königsberg ✒️";
+    } else if (score >= maxScore * 0.7) {
+        title = "Pensador Iluminista 📜";
+    } else if (score >= maxScore * 0.4) {
+        title = "Estudante de Heidelberg 🏛️";
+    }
+
+    container.innerHTML = `
+        <div class="summary-screen">
+            <h1 class="summary-title">✒️ Fim do Desafio</h1>
+            <p class="subtitle">Você concluiu o estudo das citações filosóficas alemãs!</p>
+            
+            <div class="score-circle">
+                <span class="number">${score}</span>
+                <span class="label">de ${maxScore} pts</span>
+            </div>
+
+            <div class="rank-message">
+                Título obtido: <strong>${title}</strong>
+            </div>
+
+            <button class="btn btn-next" onclick="location.reload()" style="margin: 0 auto;">
+                ↺ Jogar Novamente
+            </button>
+        </div>
+    `;
+}
+
+window.onload = () => {
+    loadQuestion();
+};
+</script>
+</body>
+</html>

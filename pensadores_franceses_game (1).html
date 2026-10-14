@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagesse Française: Desafio de Francês</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --french-blue: #0f1c3f;
+            --french-card: #141f36;
+            --french-gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --marble-white: #f5f5f7;
+            --text-light: #e2e8f0;
+            --border-gold: rgba(212, 175, 55, 0.4);
+            --correct-green: #2e7d32;
+            --wrong-red: #c62828;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: radial-gradient(circle at center, #1b2a4a 0%, #080d1a 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: var(--french-card);
+            border: 3px solid var(--french-gold);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.2);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-wrapper::before, .game-wrapper::after {
+            content: "⚜️";
+            position: absolute;
+            font-size: 1.5rem;
+            color: var(--french-gold);
+            opacity: 0.6;
+        }
+        .game-wrapper::before { top: 15px; left: 15px; }
+        .game-wrapper::after { top: 15px; right: 15px; }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border-gold);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--french-gold);
+            font-size: 2.2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            color: var(--gold-light);
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 28, 63, 0.6);
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-gold);
+            margin-bottom: 25px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gold-light);
+        }
+
+        .stat-value {
+            color: var(--french-gold);
+            font-size: 1.2rem;
+        }
+
+        .quote-box {
+            background: rgba(20, 31, 54, 0.9);
+            border-left: 4px solid var(--french-gold);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .author-tag {
+            font-family: 'Cinzel', serif;
+            color: var(--french-gold);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .portuguese-quote {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--marble-white);
+            line-height: 1.5;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .area-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            color: var(--gold-light);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .word-area {
+            min-height: 90px;
+            border: 2px dashed var(--border-gold);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: rgba(10, 18, 38, 0.4);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-content: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .word-area.answer-box {
+            border-style: solid;
+            background: rgba(10, 18, 38, 0.8);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        .french-word {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            padding: 10px 18px;
+            background: linear-gradient(145deg, #1b2a4a, #141f36);
+            border: 1px solid var(--french-gold);
+            border-radius: 8px;
+            color: var(--gold-light);
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .french-word:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.3);
+            background: linear-gradient(145deg, #243761, #1b2a4a);
+            border-color: #f3e5ab;
+        }
+
+        .french-word:active {
+            transform: translateY(1px);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-verify {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            border: 1px solid #4caf50;
+        }
+
+        .btn-verify:hover {
+            background: linear-gradient(135deg, #388e3c, #2e7d32);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #d84315, #bf360c);
+            color: white;
+            border: 1px solid #ff7043;
+        }
+
+        .btn-clear:hover {
+            background: linear-gradient(135deg, #e65100, #d84315);
+            box-shadow: 0 4px 12px rgba(216, 67, 21, 0.4);
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #b89328, #826616);
+            color: white;
+            border: 1px solid var(--gold-light);
+        }
+
+        .btn-next:hover {
+            background: linear-gradient(135deg, #d4af37, #9e7d1d);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+        }
+
+        .feedback-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.1rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback-correct {
+            display: block;
+            background: rgba(46, 125, 50, 0.25);
+            border: 1px solid var(--correct-green);
+            color: #81c784;
+        }
+
+        .feedback-wrong {
+            display: block;
+            background: rgba(198, 40, 40, 0.25);
+            border: 1px solid var(--wrong-red);
+            color: #ef9a9a;
+        }
+
+        .feedback-wrong .correct-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--gold-light);
+            margin-top: 8px;
+            display: block;
+        }
+
+        .summary-screen {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .summary-title {
+            font-family: 'Cinzel', serif;
+            color: var(--french-gold);
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid var(--french-gold);
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(10, 18, 38, 0.8);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .score-circle .number {
+            font-size: 2.2rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        .score-circle .label {
+            font-size: 0.8rem;
+            color: var(--french-gold);
+            text-transform: uppercase;
+        }
+
+        .rank-message {
+            font-size: 1.2rem;
+            color: var(--marble-white);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .game-wrapper { padding: 18px; }
+            h1 { font-size: 1.6rem; }
+            .french-word { font-size: 1.1rem; padding: 8px 12px; }
+            .btn { width: 100%; justify-content: center; }
+            .action-buttons { flex-direction: column; gap: 10px; }
+        }
+
+        footer {
+            color: var(--french-gold);               
+            text-align: center;        
+            padding: 20px;             
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-wrapper" id="gameContainer">
+    <header>
+        <h1>⚜️ SAGESSE :: Sabedoria Francesa</h1>
+        <div class="subtitle">Aprenda Francês através dos Grandes Filósofos e Pensadores</div>
+    </header>
+
+    <div id="quizView">
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span>Pergunta:</span>
+                <span class="stat-value" id="progressText">1 / 1</span>
+            </div>
+            <div class="stat-item">
+                <span>Pontuação:</span>
+                <span class="stat-value" id="scoreText">0</span>
+            </div>
+        </div>
+
+        <div class="quote-box">
+            <div class="author-tag">
+                <span>⚜️</span>
+                <span id="authorName">Pensador</span>
+            </div>
+            <div class="portuguese-quote" id="portugueseQuote">Tradução da citação em português...</div>
+        </div>
+
+        <div class="area-title">Opções de Palavras (Clique para selecionar)</div>
+        <div id="optionsArea" class="word-area"></div>
+
+        <div class="area-title">Sua Resposta em Francês (Clique na palavra para remover)</div>
+        <div id="answerArea" class="word-area answer-box"></div>
+
+        <div class="action-buttons">
+            <button class="btn btn-verify" onclick="checkAnswer()">
+                ✓ Verificar
+            </button>
+            <button class="btn btn-clear" onclick="resetCurrentQuestion()">
+                ↺ Limpar
+            </button>
+            <button class="btn btn-next" onclick="nextQuestion()">
+                ➔ Próxima
+            </button>
+        </div>
+
+        <div id="feedback" class="feedback-message"></div>
+    </div>
+    <div>
+        <footer>
+            <p>Desenvolvido por Anderson Carlos Maciel. Apoie este projeto e estudos! PIX 038.870.999-58</p>
+        </footer>
+    </div>
+</div>
+
+<script>
+const questions = [
+    { author: "René Descartes", pt: "Penso, logo existo.", fr: "Je pense, donc je suis." },
+    { author: "René Descartes", pt: "Não há nada no mundo tão bem distribuído quanto o bom senso.", fr: "Le bon sens est la chose du monde la mieux partagée." },
+    { author: "René Descartes", pt: "Para saber o que as pessoas realmente pensam, preste atenção ao que elas fazem, não ao que dizem.", fr: "Pour savoir ce que les gens pensent vraiment, prêtez attention à ce qu'ils font, pas à ce qu'ils disent." },
+    { author: "René Descartes", pt: "A leitura de todos os bons livros é como uma conversa com os melhores espíritos dos séculos passados.", fr: "La lecture de tous les bons livres est comme une conversation avec les plus honnêtes gens des siècles passés." },
+    { author: "René Descartes", pt: "Divida cada dificuldade em tantas partes quantas forem possíveis e necessárias para resolvê-la.", fr: "Diviser chacune des difficultés en autant de parcelles qu'il se pourrait et qu'il serait requis pour les mieux résoudre." },
+    { author: "Voltaire", pt: "Posso não concordar com o que você diz, mas defenderei até a morte o seu direito de dizê-lo.", fr: "Je ne suis pas d'accord avec ce que vous dites, mais je me meutrai pour que vous puissiez le dire." },
+    { author: "Voltaire", pt: "O melhor é inimigo do bom.", fr: "Le mieux est l'ennemi du bien." },
+    { author: "Voltaire", pt: "Devemos cultivar o nosso jardim.", fr: "Il faut cultiver notre jardin." },
+    { author: "Voltaire", pt: "A dúvida não é um estado agradável, mas a certeza é um estado absurdo.", fr: "Le doute n'est pas un état bien agréable, mais la certitude est un état absurde." },
+    { author: "Voltaire", pt: "Julgue um homem pelas suas perguntas e não pelas suas respostas.", fr: "Jugez un homme par ses questions plutôt que par ses réponses." },
+    { author: "Jean-Jacques Rousseau", pt: "O homem nasce livre, e em toda parte ele está acorrentado.", fr: "L'homme est né libre, et partout il est dans les fers." },
+    { author: "Jean-Jacques Rousseau", pt: "A paciência é amarga, mas seu fruto é doce.", fr: "La patience est amère, mais son fruit est doux." },
+    { author: "Jean-Jacques Rousseau", pt: "A natureza nunca nos engana; somos nós que nos enganamos.", fr: "La nature ne nous trompe jamais; c'est toujours nous qui nous trompons." },
+    { author: "Jean-Jacques Rousseau", pt: "A liberdade é um alimento fácil de devorar, mas difícil de digerir.", fr: "La liberté est un aliment facile à dévorer, mais difficile à digérer." },
+    { author: "Blaise Pascal", pt: "O coração tem razões que a própria razão desconhece.", fr: "Le cœur a ses raisons que la raison ne connaît point." },
+    { author: "Blaise Pascal", pt: "O homem é apenas um caniço, o mais fraco da natureza, mas é um caniço pensante.", fr: "L'homme n'est qu'un roseau, le plus faible de la nature, mais c'est un roseau pensant." },
+    { author: "Blaise Pascal", pt: "Todos os problemas da humanidade decorrem da incapacidade do homem de se sentar quieto em uma sala sozinho.", fr: "Tout le malheur des hommes vient d'une seule chose, qui est de ne savoir pas demeurer en repos dans une chambre." },
+    { author: "Blaise Pascal", pt: "Se você quer que as pessoas falem bem de você, não fale bem de si mesmo.", fr: "Voulez-vous qu'on dise du bien de vous? Ne vous en dites point." },
+    { author: "Albert Camus", pt: "É preciso imaginar Sísifo feliz.", fr: "Il faut imaginer Sisyphe heureux." },
+    { author: "Albert Camus", pt: "No meio do inverno, aprendi finalmente que havia em mim um verão invencível.", fr: "Au milieu de l'hiver, j'ai appris enfin qu'il y avait en moi un été invincible." },
+    { author: "Albert Camus", pt: "O homem é a única criatura que se recusa a ser o que é.", fr: "L'homme est la seule créature qui refuse d'être ce qu'elle est." },
+    { author: "Albert Camus", pt: "A liberdade não é nada além de uma oportunidade para ser melhor.", fr: "La liberté n'est rien d'autre qu'une chance d'être meilleur." },
+    { author: "Jean-Paul Sartre", pt: "A existência precede a essência.", fr: "L'existence précède l'essence." },
+    { author: "Jean-Paul Sartre", pt: "O inferno são os outros.", fr: "L'enfer, c'est les autres." },
+    { author: "Jean-Paul Sartre", pt: "O homem está condenado a ser livre.", fr: "L'homme est condamné à être libre." },
+    { author: "Jean-Paul Sartre", pt: "Não importa o que fizeram de nós, o que importa é o que fazemos com o que fizeram de nós.", fr: "L'important n'est pas ce qu'on a fait de nous, mais ce que nous faisons de ce qu'on a fait de nous." },
+    { author: "Simone de Beauvoir", pt: "Não se nasce mulher, torna-se mulher.", fr: "On ne naît pas femme, on le devient." },
+    { author: "Simone de Beauvoir", pt: "Que nada nos defina. Que nada nos sujeite. Que a liberdade seja a nossa própria substância.", fr: "Que rien ne nous définisse. Que rien ne nous assujettisse. Que la liberté soit notre propre substance." },
+    { author: "Simone de Beauvoir", pt: "A vida de alguém tem valor enquanto se atribui valor à vida dos outros.", fr: "La vie d'un individu a une valeur tant qu'on en accorde à celle des autres." },
+    { author: "Michel de Montaigne", pt: "Que sei eu?", fr: "Que sais-je?" },
+    { author: "Michel de Montaigne", pt: "A mais alta coisa do mundo é saber ser de si mesmo.", fr: "La plus grande chose du monde est de savoir être à soi." },
+    { author: "Michel de Montaigne", pt: "A verdadeira liberdade é poder fazer tudo sobre si mesmo.", fr: "La vraie liberté est de pouvoir tout sur soi." },
+    { author: "Montesquieu", pt: "É preciso que, pela disposição das coisas, o poder limite o poder.", fr: "Pour qu'on ne puisse pas abuser du pouvoir, il faut que le pouvoir arrête le pouvoir." },
+    { author: "Montesquieu", pt: "A liberdade é o direito de fazer tudo o que as leis permitem.", fr: "La liberté est le droit de faire tout ce que les lois permettent." },
+    { author: "Denis Diderot", pt: "O primeiro passo em direção à filosofia é a incredulidade.", fr: "Le premier pas vers la philosophie, c'est l'incrédulité." },
+    { author: "Denis Diderot", pt: "Só há uma virtude: a justiça; e um só dever: tornar-se feliz.", fr: "Il n'y a qu'une seule vertu, la justice; un seul devoir, de se rendre heureux." },
+    { author: "Alexis de Tocqueville", pt: "É mais fácil para uma nação conformar-se com a servidão do que manter a liberdade.", fr: "Il est plus facile pour une nation de se conformer à la servitude que de maintenir la liberté." },
+    { author: "Auguste Comte", pt: "Amor por princípio, ordem por base, progresso por fim.", fr: "L'amour pour principe, l'ordre pour base, et le progrès pour but." },
+    { author: "Henri Bergson", pt: "Existir é mudar, mudar é amadurecer, amadurecer é continuar a criar a si mesmo infinitamente.", fr: "Exister consiste à changer, changer à se mûrir, se mûrir à se créer soi-même indéfiniment." },
+    { author: "Michel Foucault", pt: "Onde há poder, há resistência.", fr: "Là où il y a du pouvoir, il y a de la résistance." },
+    { author: "Jacques Derrida", pt: "Não há fora do texto.", fr: "Il n'y a pas de hors-texte." },
+    { author: "Gilles Deleuze", pt: "A filosofia é a arte de formar, de inventar, de fabricar conceitos.", fr: "La philosophie est l'art de former, d'inventer, de fabriquer des concepts." },
+    { author: "Roland Barthes", pt: "O nascimento do leitor deve pagar-se com a morte do autor.", fr: "La naissance du lecteur doit se payer de la mort de l'Auteur." },
+    { author: "Émile Chartier (Alain)", pt: "O pessimismo é de humor; o otimismo é de vontade.", fr: "Le pessimisme est de humeur, l'optimisme est de volonté." },
+    { author: "Émile Durkheim", pt: "A sociedade é para seus membros o que Deus é para seus fiéis.", fr: "La société est à ses membres ce que Dieu est à ses fidèles." },
+    { author: "Claude Lévi-Strauss", pt: "O sábio não é o homem que fornece as respostas verdadeiras; é aquele que faz as perguntas verdadeiras.", fr: "Le savant n'est pas l'homme qui fournit les vraies réponses, c'est celui qui pose les vraies questions." },
+    { author: "Antoine de Saint-Exupéry", pt: "Só se vê bem com o coração. O essencial é invisível aos olhos.", fr: "On ne voit bien qu'avec le cœur. L'essentiel est invisible pour les yeux." },
+    { author: "Antoine de Saint-Exupéry", pt: "Tu te tornas eternamente responsável por aquilo que cativas.", fr: "Tu deviens responsable pour toujours de ce que tu as apprivoisé." },
+    { author: "Victor Hugo", pt: "Tolerância é a melhor religião.", fr: "La tolérance est la meilleure religion." },
+    { author: "Victor Hugo", pt: "Nada é mais forte do que uma ideia cuja hora chegou.", fr: "Rien n'est plus puissant qu'une idée dont le temps est venu." }
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+let userSelectedWords = [];
+let answerChecked = false;
+
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+function loadQuestion() {
+    answerChecked = false;
+    userSelectedWords = [];
+    
+    const feedback = document.getElementById("feedback");
+    feedback.className = "feedback-message";
+    feedback.style.display = "none";
+    feedback.innerHTML = "";
+
+    const currentQ = questions[currentQuestionIndex];
+
+    document.getElementById("authorName").textContent = currentQ.author;
+    document.getElementById("portugueseQuote").textContent = `"${currentQ.pt}"`;
+    document.getElementById("progressText").textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
+    document.getElementById("scoreText").textContent = score;
+
+    const answerArea = document.getElementById("answerArea");
+    answerArea.innerHTML = "";
+
+    const originalWords = currentQ.fr.split(" ");
+    const shuffledWords = shuffleArray(originalWords);
+
+    const optionsArea = document.getElementById("optionsArea");
+    optionsArea.innerHTML = "";
+
+    shuffledWords.forEach((word, index) => {
+        const wordEl = createWordElement(word, index);
+        optionsArea.appendChild(wordEl);
+    });
+}
+
+function createWordElement(wordText, id) {
+    const span = document.createElement("span");
+    span.className = "french-word";
+    span.textContent = wordText;
+    span.dataset.word = wordText;
+    span.dataset.id = id;
+
+    span.onclick = () => handleWordClick(span);
+    return span;
+}
+
+function handleWordClick(element) {
+    const optionsArea = document.getElementById("optionsArea");
+    const answerArea = document.getElementById("answerArea");
+
+    if (element.parentElement === optionsArea) {
+        optionsArea.removeChild(element);
+        answerArea.appendChild(element);
+        userSelectedWords.push(element.dataset.word);
+    } else {
+        answerArea.removeChild(element);
+        optionsArea.appendChild(element);
+        
+        const index = userSelectedWords.indexOf(element.dataset.word);
+        if (index > -1) {
+            userSelectedWords.splice(index, 1);
+        }
+    }
+}
+
+function checkAnswer() {
+    const feedback = document.getElementById("feedback");
+
+    if (userSelectedWords.length === 0) {
+        feedback.className = "feedback-message feedback-wrong";
+        feedback.innerHTML = "<strong>⚠️ Attention:</strong> Selecione ao menos uma palavra antes de verificar.";
+        feedback.style.display = "block";
+        return;
+    }
+
+    const currentQ = questions[currentQuestionIndex];
+    const userAnswer = userSelectedWords.join(" ");
+    const correctAnswer = currentQ.fr;
+
+    if (userAnswer === correctAnswer) {
+        feedback.className = "feedback-message feedback-correct";
+        feedback.innerHTML = "<strong>✨ Magnifique! (Correto!)</strong><br>Excelente domínio da língua francesa e do pensamento filosófico.";
+        feedback.style.display = "block";
+        
+        if (!answerChecked) {
+            score += 10;
+            document.getElementById("scoreText").textContent = score;
+            answerChecked = true;
+        }
+    } else {
+        feedback.className = "feedback-message feedback-wrong";
+        feedback.innerHTML = `<strong>❌ Incorrect! (Incorreto)</strong><br>A ordem correta em Francês é:<span class="correct-text">${correctAnswer}</span>`;
+        feedback.style.display = "block";
+        answerChecked = true;
+    }
+}
+
+function resetCurrentQuestion() {
+    loadQuestion();
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex >= questions.length) {
+        showFinalSummary();
+        return;
+    }
+
+    loadQuestion();
+}
+
+function showFinalSummary() {
+    const container = document.getElementById("gameContainer");
+    const maxScore = questions.length * 10;
+    
+    let title = "Étudiant de la Philosophie";
+    if (score === maxScore) {
+        title = "Maître de la Sorbonne ⚜️";
+    } else if (score >= maxScore * 0.7) {
+        title = "Penseur des Lumières 📜";
+    } else if (score >= maxScore * 0.4) {
+        title = "Philosophe de Café ☕";
+    }
+
+    container.innerHTML = `
+        <div class="summary-screen">
+            <h1 class="summary-title">⚜️ Fin du Défi</h1>
+            <p class="subtitle">Você concluiu o estudo das citações filosóficas francesas!</p>
+            
+            <div class="score-circle">
+                <span class="number">${score}</span>
+                <span class="label">de ${maxScore} pts</span>
+            </div>
+
+            <div class="rank-message">
+                Título obtido: <strong>${title}</strong>
+            </div>
+
+            <button class="btn btn-next" onclick="location.reload()" style="margin: 0 auto;">
+                ↺ Jogar Novamente
+            </button>
+        </div>
+    `;
+}
+
+window.onload = () => {
+    loadQuestion();
+};
+</script>
+</body>
+</html>

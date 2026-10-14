@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WISDOM :: Sabedoria Britânica - Desafio de Inglês</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            950: '#070d18',
+                            900: '#0c1629',
+                            800: '#13223f',
+                            700: '#1b3058',
+                        },
+                        crimson: {
+                            700: '#8b1528',
+                            600: '#aa1932',
+                            500: '#c81e3a',
+                        },
+                        gold: {
+                            300: '#f7e7a9',
+                            400: '#eac25a',
+                            500: '#d4af37',
+                            600: '#b08b26',
+                        },
+                        parchment: '#f8f5ed'
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        raleway: ['Raleway', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Raleway', sans-serif;
+            background: radial-gradient(circle at center, #13223f 0%, #0c1629 65%, #050a12 100%);
+            background-attachment: fixed;
+            color: #f8f5ed;
+        }
+
+        .gold-border {
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #f7e7a9 0%, #d4af37 50%, #b08b26 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-button {
+            background: linear-gradient(135deg, #d4af37 0%, #b08b26 100%);
+            color: #070d18;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+        }
+
+        .gold-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #eac25a 0%, #d4af37 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45);
+        }
+
+        .gold-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .word-chip {
+            background: rgba(248, 245, 237, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #f8f5ed;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .word-chip:hover {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: #d4af37;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+        }
+
+        .word-chip-selected {
+            background: linear-gradient(135deg, #d4af37 0%, #b08b26 100%);
+            color: #070d18;
+            font-weight: 600;
+            border-color: #eac25a;
+            box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+        }
+
+        .word-chip-selected:hover {
+            background: linear-gradient(135deg, #eac25a 0%, #c19a2c 100%);
+            transform: translateY(-2px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c1629;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1b3058;
+            border-radius: 4px;
+            border: 1px solid #d4af37;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 md:p-6 text-slate-100">
+
+    <!-- Header / Navigation -->
+    <header class="max-w-4xl w-full mx-auto mb-4 text-center">
+        <div class="inline-flex items-center justify-center space-x-3 mb-2">
+            <span class="text-3xl md:text-4xl">👑</span>
+            <h1 class="font-cinzel text-3xl md:text-5xl font-black tracking-wider gold-gradient-text uppercase">
+                Wisdom
+            </h1>
+            <span class="text-3xl md:text-4xl">👑</span>
+        </div>
+        <p class="font-playfair italic text-amber-200/80 text-sm md:text-base">
+            Sabedoria Britânica — Desafio de Língua, Ciência e Literatura
+        </p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-4xl w-full mx-auto bg-navy-900/90 backdrop-blur-md rounded-2xl p-4 md:p-8 gold-border shadow-2xl flex-grow flex flex-col justify-between my-2">
+
+        <!-- Game Active Screen -->
+        <div id="game-screen" class="space-y-6">
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-3 gap-2 md:gap-4 bg-navy-950/80 p-3 md:p-4 rounded-xl border border-gold-500/30 text-center font-cinzel">
+                <div class="p-1">
+                    <span class="text-xs text-amber-300/70 block uppercase tracking-wider">Questão</span>
+                    <span id="stat-progress" class="text-lg md:text-2xl font-bold text-amber-400">1 / 50</span>
+                </div>
+                <div class="p-1 border-x border-gold-500/20">
+                    <span class="text-xs text-amber-300/70 block uppercase tracking-wider">Pontuação</span>
+                    <span id="stat-score" class="text-lg md:text-2xl font-bold text-amber-400">0</span>
+                </div>
+                <div class="p-1">
+                    <span class="text-xs text-amber-300/70 block uppercase tracking-wider">Precisão</span>
+                    <span id="stat-accuracy" class="text-lg md:text-2xl font-bold text-amber-400">100%</span>
+                </div>
+            </div>
+
+            <!-- Quote Container -->
+            <div class="bg-navy-950/60 p-5 md:p-6 rounded-xl border-l-4 border-crimson-600 relative">
+                <div class="flex justify-between items-start mb-2">
+                    <span id="quote-author" class="font-cinzel text-amber-400 font-bold tracking-wide text-lg md:text-xl">
+                        --
+                    </span>
+                    <span id="author-period" class="text-xs text-amber-200/60 font-mono bg-navy-800/80 px-2.5 py-1 rounded border border-gold-500/20">
+                        --
+                    </span>
+                </div>
+                <p id="quote-translation" class="font-playfair text-slate-200 italic text-base md:text-xl leading-relaxed mt-2">
+                    "--"
+                </p>
+            </div>
+
+            <!-- Answer Construction Area -->
+            <div>
+                <label class="block text-xs uppercase font-cinzel text-amber-300/80 mb-2 tracking-wider flex items-center justify-between">
+                    <span>Sua resposta em Inglês:</span>
+                    <span class="text-amber-200/50 text-[10px] lowercase italic">(clique nas palavras para mover)</span>
+                </label>
+                <div id="answer-area" class="min-h-[90px] p-4 bg-navy-950/90 rounded-xl border-2 border-dashed border-gold-500/40 flex flex-wrap gap-2 items-center align-content-start transition-all">
+                    <!-- Selected words appear here -->
+                </div>
+            </div>
+
+            <!-- Options Area (Word Bank) -->
+            <div>
+                <label class="block text-xs uppercase font-cinzel text-amber-300/80 mb-2 tracking-wider">
+                    Banco de Palavras:
+                </label>
+                <div id="options-area" class="min-h-[90px] p-4 bg-navy-950/40 rounded-xl border border-gold-500/20 flex flex-wrap gap-2 items-center align-content-start">
+                    <!-- Available words appear here -->
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-3 justify-between items-center pt-2">
+                <button id="btn-clear" onclick="clearAnswer()" class="px-4 py-2.5 rounded-lg border border-gold-500/40 hover:border-gold-500 text-amber-200 hover:text-white transition flex items-center gap-2 text-sm font-semibold">
+                    <i class="fa-solid fa-rotate-left text-xs"></i> Limpar
+                </button>
+
+                <div class="flex gap-3">
+                    <button id="btn-verify" onclick="verifyAnswer()" class="gold-button px-6 py-2.5 rounded-lg text-sm uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i> Verificar
+                    </button>
+                    <button id="btn-next" onclick="nextQuestion()" style="display: none;" class="bg-crimson-600 hover:bg-crimson-500 text-white font-bold px-6 py-2.5 rounded-lg text-sm uppercase tracking-wider transition shadow-lg flex items-center gap-2">
+                        Próxima <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feedback Message Box -->
+            <div id="feedback-box" style="display: none;" class="p-4 rounded-xl text-sm leading-relaxed border transition-all">
+                <div id="feedback-content"></div>
+            </div>
+        </div>
+
+        <!-- End Game Screen -->
+        <div id="end-screen" style="display: none;" class="text-center space-y-6 py-6">
+            <div class="text-6xl mb-2">👑</div>
+            <h2 class="font-cinzel text-3xl md:text-4xl font-bold text-amber-400">
+                Desafio Concluído!
+            </h2>
+            <p class="font-playfair text-lg text-amber-100 italic">
+                Você percorreu o pensamento e a literatura dos maiores nomes da Grã-Bretanha.
+            </p>
+
+            <!-- Score Gold Circle & Rank -->
+            <div class="bg-navy-950/80 p-6 rounded-xl border border-gold-500/40 max-w-md mx-auto space-y-5">
+                
+                <!-- Golden Score Badge Circle -->
+                <div class="w-32 h-32 rounded-full border-4 border-gold-500 bg-gradient-to-br from-amber-400/20 to-amber-600/10 mx-auto flex flex-col justify-center items-center shadow-lg gold-border">
+                    <span class="text-xs uppercase font-cinzel text-amber-300">Pontos</span>
+                    <span id="final-score" class="text-3xl font-black text-amber-400 font-cinzel">0</span>
+                </div>
+
+                <div>
+                    <span class="text-xs uppercase font-cinzel text-amber-300/70 block">Título de Honra Concedido</span>
+                    <span id="final-rank" class="font-cinzel text-2xl font-black text-amber-400 block mt-1">
+                        Royal Thinker 📜
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 border-t border-gold-500/20 pt-4">
+                    <div>
+                        <span class="text-xs text-amber-200/60 block">Questões Concluídas</span>
+                        <span class="text-xl font-bold text-white">50 / 50</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-amber-200/60 block">Precisão</span>
+                        <span id="final-accuracy" class="text-xl font-bold text-white">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button onclick="restartGame()" class="gold-button px-8 py-3 rounded-xl text-base uppercase tracking-wider inline-flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-rotate-right"></i> Jogar Novamente
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-4xl w-full mx-auto mt-4 text-center text-xs text-amber-200/60 space-y-1 pb-2">
+        <p>Desenvolvido por <span class="text-amber-400 font-semibold">Anderson Carlos Maciel</span> | Apoie este projeto via PIX: <span class="bg-navy-800 px-2 py-0.5 rounded border border-gold-500/30 font-mono text-amber-300">038.870.999-58</span></p>
+    </footer>
+
+    <script>
+        // Quotes Database (~50 British Thinkers and Writers)
+        const quotesDatabase = [
+            { author: "William Shakespeare", period: "1564 - 1616", translation: "Ser ou não ser, eis a questão.", en: "To be, or not to be, that is the question." },
+            { author: "Francis Bacon", period: "1561 - 1626", translation: "Conhecimento é poder.", en: "Knowledge itself is power." },
+            { author: "Thomas Hobbes", period: "1588 - 1679", translation: "A vida do homem é solitária, pobre, sórdida, embrutecida e curta.", en: "The life of man is solitary, poor, nasty, brutish, and short." },
+            { author: "John Locke", period: "1632 - 1704", translation: "Nenhum conhecimento do homem pode ir além da sua experiência.", en: "No man's knowledge here can go beyond his experience." },
+            { author: "Isaac Newton", period: "1643 - 1727", translation: "Se vi mais longe, foi por estar sobre os ombros de gigantes.", en: "If I have seen further it is by standing on the shoulders of Giants." },
+            { author: "Bertrand Russell", period: "1872 - 1970", translation: "O problema do mundo é que os tolos são seguros e os inteligentes cheios de dúvidas.", en: "The trouble with the world is that the stupid are cocksure and the intelligent are full of doubt." },
+            { author: "John Stuart Mill", period: "1806 - 1873", translation: "A liberdade do indivíduo deve ser limitada até onde não prejudique os outros.", en: "The liberty of the individual must be thus far limited; he must not make himself a nuisance to other people." },
+            { author: "Mary Wollstonecraft", period: "1759 - 1797", translation: "Não desejo que as mulheres tenham poder sobre os homens, mas sobre si mesmas.", en: "I do not wish women to have power over men, but over themselves." },
+            { author: "Adam Smith", period: "1723 - 1790", translation: "Não é da benevolência do padeiro que esperamos nosso jantar, mas da sua consideração ao seu próprio interesse.", en: "It is not from the benevolence of the butcher, the brewer, or the baker that we expect our dinner, but from their regard to their own interest." },
+            { author: "Oscar Wilde", period: "1854 - 1900", translation: "Seja você mesmo; todos os outros papéis já estão ocupados.", en: "Be yourself; everyone else is already taken." },
+            { author: "George Orwell", period: "1903 - 1950", translation: "Numa época de engano universal, dizer a verdade é um ato revolucionário.", en: "In a time of universal deceit, telling the truth is a revolutionary act." },
+            { author: "Virginia Woolf", period: "1882 - 1941", translation: "Uma mulher deve ter dinheiro e um teto todo seu se pretende escrever ficção.", en: "A woman must have money and a room of her own if she is to write fiction." },
+            { author: "Charles Darwin", period: "1809 - 1882", translation: "Não é o mais forte que sobrevive, mas o que melhor se adapta às mudanças.", en: "It is not the strongest of the species that survives, but the one most adaptable to change." },
+            { author: "Winston Churchill", period: "1874 - 1965", translation: "O sucesso não é final, o fracasso não é fatal: é a coragem de continuar que conta.", en: "Success is not final, failure is not fatal: it is the courage to continue that counts." },
+            { author: "William Shakespeare", period: "1564 - 1616", translation: "Sabemos o que somos, mas não sabemos o que podemos ser.", en: "We know what we are, but know not what we may be." },
+            { author: "Francis Bacon", period: "1561 - 1626", translation: "Um sábio criará mais oportunidades do que as que encontra.", en: "A wise man will make more opportunities than he finds." },
+            { author: "John Locke", period: "1632 - 1704", translation: "Ações são os melhores intérpretes dos pensamentos dos homens.", en: "Actions of men are the best interpreters of their thoughts." },
+            { author: "Isaac Newton", period: "1643 - 1727", translation: "Construímos muros demais e pontes de menos.", en: "We build too many walls and not enough bridges." },
+            { author: "Bertrand Russell", period: "1872 - 1970", translation: "A boa vida é inspirada pelo amor e guiada pelo conhecimento.", en: "The good life is one inspired by love and guided by knowledge." },
+            { author: "Oscar Wilde", period: "1854 - 1900", translation: "A verdade raramente é pura e nunca é simples.", en: "The truth is rarely pure and never simple." },
+            { author: "George Orwell", period: "1903 - 1950", translation: "Quem controla o passado controla o futuro. Quem controla o presente controla o passado.", en: "Who controls the past controls the future. Who controls the present controls the past." },
+            { author: "Winston Churchill", period: "1874 - 1965", translation: "Se você está atravessando o inferno, continue andando.", en: "If you are going through hell, keep going." },
+            { author: "Charles Dickens", period: "1812 - 1870", translation: "Foi o melhor dos tempos, foi o pior dos tempos.", en: "It was the best of times, it was the worst of times." },
+            { author: "Jane Austen", period: "1775 - 1817", translation: "Não há charme igual à ternura do coração.", en: "There is no charm equal to tenderness of heart." },
+            { author: "Ada Lovelace", period: "1815 - 1852", translation: "A imaginação é a faculdade de descoberta.", en: "Imagination is the discovering faculty." },
+            { author: "Alexander Pope", period: "1688 - 1744", translation: "Errar é humano, perdoar é divino.", en: "To err is human; to forgive, divine." },
+            { author: "Samuel Johnson", period: "1709 - 1784", translation: "A curiosidade é uma das características mais certas e vigorosas de um intelecto ativo.", en: "Curiosity is, in great and generous minds, the first passion and the last." },
+            { author: "Arthur Conan Doyle", period: "1859 - 1930", translation: "Quando se elimina o impossível, o que resta, por mais improvável que seja, deve ser a verdade.", en: "When you have eliminated the impossible, whatever remains, however improbable, must be the truth." },
+            { author: "Mary Shelley", period: "1797 - 1851", translation: "Nada é tão doloroso para a mente humana quanto uma mudança grande e repentina.", en: "Nothing is so painful to the human mind as a great and sudden change." },
+            { author: "C.S. Lewis", period: "1898 - 1963", translation: "Você nunca é velho demais para definir outro objetivo ou sonhar um novo sonho.", en: "You are never too old to set another goal or to dream a new dream." },
+            { author: "J.R.R. Tolkien", period: "1892 - 1973", translation: "Nem todos os que vagam estão perdidos.", en: "Not all those who wander are lost." },
+            { author: "William Blake", period: "1757 - 1827", translation: "O caminho do excesso leva ao palácio da sabedoria.", en: "The road of excess leads to the palace of wisdom." },
+            { author: "David Hume", period: "1711 - 1776", translation: "A beleza das coisas existe na mente de quem as contempla.", en: "Beauty in things exists in the mind which contemplates them." },
+            { author: "John Milton", period: "1608 - 1674", translation: "A mente é o seu próprio lugar, e dentro de si pode fazer do céu um inferno, ou do inferno um céu.", en: "The mind is its own place, and in itself can make a heaven of hell, a hell of heaven." },
+            { author: "Edmund Burke", period: "1729 - 1797", translation: "A única coisa necessária para o triunfo do mal é que os homens bons não façam nada.", en: "The only thing necessary for the triumph of evil is for good men to do nothing." },
+            { author: "Thomas Paine", period: "1737 - 1809", translation: "Minha mente é minha própria igreja.", en: "My own mind is my own church." },
+            { author: "Aldous Huxley", period: "1894 - 1963", translation: "Há apenas um canto do universo que você pode ter certeza de melhorar, e esse é você mesmo.", en: "There is only one corner of the universe you can be certain of improving, and that's your own self." },
+            { author: "George Bernard Shaw", period: "1856 - 1950", translation: "A vida não é sobre se encontrar. A vida é sobre se criar.", en: "Life isn't about finding yourself. Life is about creating yourself." },
+            { author: "H.G. Wells", period: "1866 - 1946", translation: "A história humana se torna cada vez mais uma corrida entre a educação e a catástrofe.", en: "Human history becomes more and more a race between education and catastrophe." },
+            { author: "Charlotte Brontë", period: "1816 - 1855", translation: "Eu não sou nenhum pássaro, e nenhuma rede me prende.", en: "I am no bird; and no net ensnares me." },
+            { author: "Stephen Hawking", period: "1942 - 2018", translation: "A inteligência é a capacidade de se adaptar à mudança.", en: "Intelligence is the ability to adapt to change." },
+            { author: "Alan Turing", period: "1912 - 1954", translation: "Às vezes são as pessoas de quem ninguém imagina nada que fazem as coisas que ninguém consegue imaginar.", en: "Sometimes it is the people no one imagines anything of who do the things that no one can imagine." },
+            { author: "William Wordsworth", period: "1770 - 1850", translation: "A criança é o pai do homem.", en: "The child is father of the man." },
+            { author: "John Keats", period: "1795 - 1821", translation: "Uma coisa bela é uma alegria para sempre.", en: "A thing of beauty is a joy forever." },
+            { author: "Lord Byron", period: "1788 - 1824", translation: "Há prazer nos bosques sem caminhos.", en: "There is a pleasure in the pathless woods." },
+            { author: "Geoffrey Chaucer", period: "1343 - 1400", translation: "A paciência é uma grande virtude.", en: "Patience is a conquering virtue." },
+            { author: "Florence Nightingale", period: "1820 - 1910", translation: "Atribuo meu sucesso a isto: nunca dei ou aceitei uma desculpa.", en: "I attribute my success to this: I never gave or took any excuse." },
+            { author: "Thomas Carlyle", period: "1795 - 1881", translation: "O silêncio é o elemento no qual grandes coisas se moldam.", en: "Silence is the element in which great things fashion themselves." },
+            { author: "Agatha Christie", period: "1890 - 1976", translation: "Um dos segredos mais felizes da vida é fazer uma pausa no trabalho.", en: "One of the luckiest things that can happen to you in life is to have a happy childhood." },
+            { author: "William Shakespeare", period: "1564 - 1616", translation: "O amor não olha com os olhos, mas com a mente.", en: "Love looks not with the eyes, but with the mind." }
+        ];
+
+        // State Variables
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let totalAttempts = 0;
+        let correctAnswers = 0;
+        let selectedWords = [];
+        let availableWords = [];
+
+        // DOM Element Cache
+        const statProgress = document.getElementById('stat-progress');
+        const statScore = document.getElementById('stat-score');
+        const statAccuracy = document.getElementById('stat-accuracy');
+        const quoteAuthor = document.getElementById('quote-author');
+        const authorPeriod = document.getElementById('author-period');
+        const quoteTranslation = document.getElementById('quote-translation');
+        const answerArea = document.getElementById('answer-area');
+        const optionsArea = document.getElementById('options-area');
+        const btnVerify = document.getElementById('btn-verify');
+        const btnNext = document.getElementById('btn-next');
+        const btnClear = document.getElementById('btn-clear');
+        const feedbackBox = document.getElementById('feedback-box');
+        const feedbackContent = document.getElementById('feedback-content');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+
+        // Helper: Shuffle Array
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Helper: Tokenize English quote
+        function tokenizeEnglish(sentence) {
+            return sentence.trim().split(/\s+/);
+        }
+
+        // Initialize Game
+        function initGame() {
+            currentQuestions = shuffleArray(quotesDatabase);
+            currentIndex = 0;
+            score = 0;
+            totalAttempts = 0;
+            correctAnswers = 0;
+            
+            gameScreen.style.display = 'block';
+            endScreen.style.display = 'none';
+
+            loadQuestion();
+        }
+
+        // Load Question
+        function loadQuestion() {
+            const current = currentQuestions[currentIndex];
+            
+            // Header stats & content
+            statProgress.textContent = `${currentIndex + 1} / ${currentQuestions.length}`;
+            quoteAuthor.textContent = current.author;
+            authorPeriod.textContent = current.period;
+            quoteTranslation.textContent = `"${current.translation}"`;
+
+            // Reset selected and options
+            selectedWords = [];
+            const originalTokens = tokenizeEnglish(current.en);
+            
+            availableWords = shuffleArray(originalTokens.map((word, idx) => ({
+                id: `${idx}-${word}`,
+                text: word
+            })));
+
+            // Reset Controls & Feedback
+            btnVerify.style.display = 'inline-flex';
+            btnNext.style.display = 'none';
+            btnVerify.disabled = false;
+            btnClear.disabled = false;
+            feedbackBox.style.display = 'none';
+
+            renderWords();
+        }
+
+        // Render Word Chips
+        function renderWords() {
+            // Render Answer Space
+            answerArea.innerHTML = '';
+            if (selectedWords.length === 0) {
+                answerArea.innerHTML = `<span class="text-amber-200/30 text-sm italic pointer-events-none">Your sentence will appear here...</span>`;
+            } else {
+                selectedWords.forEach((wordObj, index) => {
+                    const chip = document.createElement('button');
+                    chip.className = 'word-chip word-chip-selected px-3 py-1.5 rounded-lg text-sm md:text-base';
+                    chip.textContent = wordObj.text;
+                    chip.onclick = () => deselectWord(index);
+                    answerArea.appendChild(chip);
+                });
+            }
+
+            // Render Options Space
+            optionsArea.innerHTML = '';
+            availableWords.forEach((wordObj, index) => {
+                const chip = document.createElement('button');
+                chip.className = 'word-chip px-3 py-1.5 rounded-lg text-sm md:text-base';
+                chip.textContent = wordObj.text;
+                chip.onclick = () => selectWord(index);
+                optionsArea.appendChild(chip);
+            });
+        }
+
+        // Select Word
+        function selectWord(index) {
+            const word = availableWords.splice(index, 1)[0];
+            selectedWords.push(word);
+            renderWords();
+        }
+
+        // Deselect Word
+        function deselectWord(index) {
+            const word = selectedWords.splice(index, 1)[0];
+            availableWords.push(word);
+            renderWords();
+        }
+
+        // Clear Answer Area
+        function clearAnswer() {
+            availableWords = [...availableWords, ...selectedWords];
+            selectedWords = [];
+            renderWords();
+        }
+
+        // Verify Answer
+        function verifyAnswer() {
+            if (selectedWords.length === 0) {
+                feedbackBox.style.display = 'block';
+                feedbackBox.className = 'p-4 rounded-xl text-sm leading-relaxed border bg-amber-950/80 border-amber-500/50 text-amber-200 mt-4';
+                feedbackContent.innerHTML = '⚠️ <strong>Attention:</strong> Select at least one word before verifying. (Selecione ao menos uma palavra antes de verificar).';
+                return;
+            }
+
+            totalAttempts++;
+            const current = currentQuestions[currentIndex];
+            const userString = selectedWords.map(w => w.text).join(' ');
+            const targetString = current.en;
+
+            feedbackBox.style.display = 'block';
+
+            if (userString === targetString) {
+                // Correct
+                correctAnswers++;
+                score += 100;
+
+                feedbackBox.className = 'p-4 rounded-xl text-sm leading-relaxed border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 mt-4';
+                feedbackContent.innerHTML = `✨ <strong>Correct! (Correto!)</strong><br>Splendid command of the English language and wisdom!`;
+
+                try {
+                    confetti({
+                        particleCount: 40,
+                        spread: 60,
+                        origin: { y: 0.8 },
+                        colors: ['#d4af37', '#aa1932', '#f8f5ed']
+                    });
+                } catch(e){}
+
+                btnVerify.style.display = 'none';
+                btnNext.style.display = 'inline-flex';
+                btnClear.disabled = true;
+
+            } else {
+                // Incorrect
+                feedbackBox.className = 'p-4 rounded-xl text-sm leading-relaxed border bg-rose-950/80 border-rose-500/50 text-rose-200 mt-4';
+                feedbackContent.innerHTML = `❌ <strong>Incorrect! (Incorreto)</strong><br>A ordem exata da citação em Inglês é:<br><span class="font-bold text-amber-300 font-playfair text-base md:text-lg mt-1 block">${targetString}</span>`;
+
+                btnVerify.style.display = 'none';
+                btnNext.style.display = 'inline-flex';
+                btnClear.disabled = true;
+            }
+
+            updateStats();
+        }
+
+        // Update Statistics
+        function updateStats() {
+            statScore.textContent = score;
+            const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 100;
+            statAccuracy.textContent = `${accuracy}%`;
+        }
+
+        // Next Question
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                showEndScreen();
+            }
+        }
+
+        // Calculate Honor Rank
+        function calculateRank(accuracy) {
+            if (accuracy >= 95) return 'Scholar of Oxford 👑';
+            if (accuracy >= 80) return 'Royal Thinker 📜';
+            if (accuracy >= 60) return 'Student of Cambridge 🏛️';
+            if (accuracy >= 40) return 'Fellow of the Royal Society 🔍';
+            return 'Member of Parliament 🏛️';
+        }
+
+        // Show End Summary Screen
+        function showEndScreen() {
+            gameScreen.style.display = 'none';
+            endScreen.style.display = 'block';
+
+            const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 0;
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('final-accuracy').textContent = `${accuracy}%`;
+            document.getElementById('final-rank').textContent = calculateRank(accuracy);
+
+            try {
+                confetti({
+                    particleCount: 120,
+                    spread: 100,
+                    origin: { y: 0.5 },
+                    colors: ['#d4af37', '#eac25a', '#aa1932', '#1b3058']
+                });
+            } catch(e){}
+        }
+
+        // Restart Game
+        function restartGame() {
+            initGame();
+        }
+
+        // Window Load Trigger
+        window.onload = function() {
+            initGame();
+        };
+    </script>
+</body>
+</html>
