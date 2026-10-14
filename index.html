@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Κόσμος τῆς Σοφίας :: O Super-App da Sabedoria Mundial</title>
     <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +15,37 @@
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hub: {
+                            950: '#060913',
+                            900: '#0b1329',
+                            800: '#14213d',
+                            700: '#1d3158',
+                        },
+                        gold: {
+                            300: '#f9f1cc',
+                            400: '#f3e5ab',
+                            500: '#d4af37',
+                            600: '#b59021',
+                            700: '#8c6c12',
+                        }
+                    },
+                    fontFamily: {
+                        cinzelDeco: ['Cinzel Decorative', 'serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        didot: ['GFS Didot', 'serif'],
+                        notoGreek: ['Noto Serif Greek', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        raleway: ['Raleway', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
         body {
@@ -55,33 +86,18 @@
             transform: none;
         }
 
-        .word-chip {
-            background: rgba(245, 245, 247, 0.08);
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            color: #f5f5f7;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            user-select: none;
-        }
-
-        .word-chip:hover {
-            background: rgba(212, 175, 55, 0.25);
-            border-color: #d4af37;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-        }
-
-        .word-chip-selected {
-            background: linear-gradient(135deg, #d4af37 0%, #b59021 100%);
-            color: #060913;
-            font-weight: 700;
-            border-color: #f3e5ab;
-            box-shadow: 0 2px 10px rgba(212, 175, 55, 0.35);
-        }
-
         .lang-card {
             transition: all 0.3s ease;
             background: rgba(20, 33, 61, 0.6);
             border: 1px solid rgba(212, 175, 55, 0.3);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
         }
 
         .lang-card:hover {
@@ -111,7 +127,7 @@
         <div class="inline-flex items-center justify-center space-x-3 mb-2">
             <span class="text-3xl md:text-4xl">🏛️</span>
             <h1 class="font-cinzelDeco text-3xl md:text-5xl font-black tracking-widest gold-gradient-text uppercase">
-               Κόσμος τῆς Σοφίας
+                Κόσμος τῆς Σοφίας
             </h1>
             <span class="text-3xl md:text-4xl">📜</span>
         </div>
@@ -133,67 +149,70 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Grego Antigo -->
-                <a href="greek.html">
-                <button onclick="startApp('greek')" class="lang-card p-5 rounded-xl text-left flex items-start gap-4">
-                    <span class="text-3xl">🏛️</span>
-                    <div>
-                        <h3 class="font-cinzel text-lg font-bold text-gold-400">Grego Antigo (ΣΟΦΙΑ)</h3>
-                        <p class="text-xs text-slate-300 mt-1">Sócrates, Platão, Aristóteles, Heráclito e Homero em grego politônico original[cite: 1].</p>
-                    </div>
-                </button>
-                </a>    
+                <a href="greek.html" class="block">
+                    <button class="lang-card">
+                        <span class="text-3xl">🏛️</span>
+                        <div>
+                            <h3 class="font-cinzel text-lg font-bold text-gold-400">Grego Antigo (ΣΟΦΙΑ)</h3>
+                            <p class="text-xs text-slate-300 mt-1">Sócrates, Platão, Aristóteles, Heráclito e Homero em grego politônico original[cite: 1].</p>
+                        </div>
+                    </button>
+                </a>
 
                 <!-- Francês -->
-                <a href="french.html">
-                <button onclick="startApp('french')" class="lang-card p-5 rounded-xl text-left flex items-start gap-4">
-                    <span class="text-3xl">⚜️</span>
-                    <div>
-                        <h3 class="font-cinzel text-lg font-bold text-gold-400">Francês (Sagesse)</h3>
-                        <p class="text-xs text-slate-300 mt-1">Descartes, Voltaire, Rousseau, Pascal, Camus e Sartre[cite: 2].</p>
-                    </div>
-                </button>
+                <a href="french.html" class="block">
+                    <button class="lang-card">
+                        <span class="text-3xl">⚜️</span>
+                        <div>
+                            <h3 class="font-cinzel text-lg font-bold text-gold-400">Francês (Sagesse)</h3>
+                            <p class="text-xs text-slate-300 mt-1">Descartes, Voltaire, Rousseau, Pascal, Camus e Sartre[cite: 2].</p>
+                        </div>
+                    </button>
                 </a>
 
                 <!-- Inglês -->
-                <a href="britain.html">
-                <button onclick="startApp('english')" class="lang-card p-5 rounded-xl text-left flex items-start gap-4">
-                    <span class="text-3xl">👑</span>
-                    <div>
-                        <h3 class="font-cinzel text-lg font-bold text-gold-400">Inglês (Wisdom)</h3>
-                        <p class="text-xs text-slate-300 mt-1">Shakespeare, Bacon, Newton, Darwin, Churchill e Orwell[cite: 3].</p>
-                    </div>
-                </button>
+                <a href="britain.html" class="block">
+                    <button class="lang-card">
+                        <span class="text-3xl">👑</span>
+                        <div>
+                            <h3 class="font-cinzel text-lg font-bold text-gold-400">Inglês (Wisdom)</h3>
+                            <p class="text-xs text-slate-300 mt-1">Shakespeare, Bacon, Newton, Darwin, Churchill e Orwell[cite: 3].</p>
+                        </div>
+                    </button>
                 </a>
 
                 <!-- Italiano -->
-                <a href="italiano.html">
-                <button onclick="startApp('italian')" class="lang-card p-5 rounded-xl text-left flex items-start gap-4">
-                    <span class="text-3xl">📜</span>
-                    <div>
-                        <h3 class="font-cinzel text-lg font-bold text-gold-400">Italiano (Sapienza)</h3>
-                        <p class="text-xs text-slate-300 mt-1">Dante, Maquiavel, Da Vinci, Galilei, Eco e Petrarca[cite: 4].</p>
-                    </div>
-                </button>
+                <a href="italiano.html" class="block">
+                    <button class="lang-card">
+                        <span class="text-3xl">📜</span>
+                        <div>
+                            <h3 class="font-cinzel text-lg font-bold text-gold-400">Italiano (Sapienza)</h3>
+                            <p class="text-xs text-slate-300 mt-1">Dante, Maquiavel, Da Vinci, Galilei, Eco e Petrarca[cite: 4].</p>
+                        </div>
+                    </button>
                 </a>
             </div>
 
             <!-- Alemão (Full width card) -->
             <div>
-                <a href="german.html">
-                <button onclick="startApp('german')" class="lang-card p-5 rounded-xl text-left flex items-start gap-4 w-full">
-                    <span class="text-3xl">✒️</span>
-                    <div>
-                        <h3 class="font-cinzel text-lg font-bold text-gold-400">Alemão (Geist)</h3>
-                        <p class="text-xs text-slate-300 mt-1">Nietzsche, Kant, Schopenhauer, Marx, Goethe e Einstein[cite: 5].</p>
-                    </div>
-                </button>
+                <a href="german.html" class="block">
+                    <button class="lang-card">
+                        <span class="text-3xl">✒️</span>
+                        <div>
+                            <h3 class="font-cinzel text-lg font-bold text-gold-400">Alemão (Geist)</h3>
+                            <p class="text-xs text-slate-300 mt-1">Nietzsche, Kant, Schopenhauer, Marx, Goethe e Einstein[cite: 5].</p>
+                        </div>
+                    </button>
                 </a>
             </div>
         </div>
-        <!-- Footer -->
+
+    </main>
+
+    <!-- Footer -->
     <footer class="max-w-4xl w-full mx-auto mt-4 text-center text-xs text-slate-400 space-y-1 pb-2">
         <p>Desenvolvido por <span class="text-gold-400 font-semibold">Anderson Carlos Maciel</span> | Apoie este projeto e estudos! PIX: <span class="bg-hub-800 px-2 py-0.5 rounded border border-gold-500/30 font-mono text-gold-300">038.870.999-58</span></p>
     </footer>
-    </main>
+
 </body>
 </html>
